@@ -210,7 +210,7 @@ export default function Nav() {
         {/* ABOUT US MENU */}
         <li className={styles.navItem}>
           <button className="down_button" aria-haspopup="true" aria-expanded={openMenu === "about"} onClick={() => toggleMenu("about")}>
-            About {" "}
+            About Us{" "}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" aria-hidden>
               <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M36 18L24 30L12 18" />
             </svg>
@@ -240,7 +240,7 @@ export default function Nav() {
         {isLoggedIn ? (
           <li className={styles.navItem}>
             <button className="down_button" aria-haspopup="true" aria-expanded={openMenu === "account"} onClick={() => toggleMenu("account")}>
-              Account{" "}
+              My Account{" "}
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" aria-hidden>
                 <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M36 18L24 30L12 18" />
               </svg>

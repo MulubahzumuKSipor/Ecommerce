@@ -84,6 +84,50 @@ nav{
   position: fixed;
   z-index: 1000;
   width: 100%;
+  padding: 20px 0px;
+}
+
+.input{
+  width: 350px;
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14;
+}
+
+.listbox{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1000;
+  border-radius: 15px;
+  margin-top: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+
+@media (max-width: 600px) {
+  .input{
+    width: 120px;
+  }
+  .listbox{
+  left: -75px;
+  right: -75px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1000;
+  margin-top: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.main_wrapper{
+  padding: 10px 0px;
+}
 }
 
 .main_wrapper_footer {

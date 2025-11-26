@@ -1,55 +1,331 @@
-/* CategoryList.module.css */
+/* categories.module.css */
 
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Default: Desktop/Tablet Grid Layout (min-width: 851px) */
 .grid {
   display: grid;
-  /* Responsive columns: fit as many as possible, minimum 180px wide */
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  padding: 50px 120px;
-  gap: 1rem;
-  /* width: 100%; */
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
 
 .card {
-  /* Layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s;
+  background: white;
+  text-decoration: none;
+  color: inherit;
+  min-width: 150px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* --- CAROUSEL WRAPPER & ARROWS --- */
+
+.carouselWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+
+  /* HIDDEN BY DEFAULT */
+  display: none;
+}
+
+.arrow:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.leftArrow {
+  left: 20px;
+}
+
+.rightArrow {
+  right: 20px;
+}
+
+/* -------------------------------------------
+   MEDIA QUERIES (850px breakpoint)
+   ------------------------------------------- */
+
+/* Desktop/Tablet (HIDE Arrows, Show Grid) */
+@media (min-width: 851px) {
+  /* Ensure arrows are hidden on large screens */
+  .arrow {
+    display: none;
+  }
+}
+
+/* Mobile (SHOW Arrows & Enable Swiping Carousel) */
+@media (max-width: 850px) {
+  /* 1. SHOW arrows on mobile */
+  .arrow {
+    display: flex; /* REVERSED: SHOW arrows on mobile */
+  }
+
+  /* 2. Overrides for grid container (Carousel Mode) */
+  .grid {
+    display: flex;              /* Switch from Grid to Flexbox */
+    overflow-x: auto;           /* Enable horizontal scrolling */
+    scroll-snap-type: x mandatory; /* Enable snapping */
+
+    padding: 0 1rem;            /* Reset padding for screen edges */
+    gap: 1rem;
+    padding-bottom: 1rem;
+
+    -webkit-overflow-scrolling: touch;
+
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Hide scrollbar for Webkit browsers */
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 3. Overrides for card items */
+  .card {
+    flex: 0 0 auto;           /* Prevent shrinking/growing */
+    width: 160px;             /* Fixed width for snap effect/peeking */
+    min-width: 160px;
+    scroll-snap-align: start; /* Snap to the left edge of the card */
+  }
+}
+
+
+/* --- CONTAINER & LAYOUT --- */
+.container {
+  padding: 2rem 1rem; /* Added horizontal padding for mobile edge safety */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+/* --- THE GRID / CAROUSEL --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding-bottom: 1rem; /* Space for hover shadows or scrollbar */
+}
+
+/* --- MOBILE CAROUSEL LOGIC (Max Width 768px) --- */
+@media (max-width: 768px) {
+  .grid {
+    display: flex;             /* Turn grid into a row */
+    overflow-x: auto;          /* Enable horizontal scrolling */
+    gap: 1rem;                 /* Gap between slides */
+
+    /* Scroll Snap Magic */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; /* Smooth momentum scroll on iOS */
+
+    /* Hide Scrollbar (Optional - purely aesthetic) */
+    scrollbar-width: none;     /* Firefox */
+    -ms-overflow-style: none;  /* IE */
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;             /* Chrome/Safari */
+  }
+
+  .card {
+    /* flex: 0 0 85%
+      This is crucial. It forces the card to be 85% of the screen width.
+      The remaining 15% shows a "peek" of the next card, encouraging swipe.
+    */
+    flex: 0 0 85%;
+    max-width: 10px;              /* Prevents flexbox overflow bugs */
+    scroll-snap-align: center; /* Snap the card to the center of the screen */
+  }
+}
+
+/* --- CARD STYLING --- */
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%; /* Ensure equal height in grid view */
+}
+
+/* Only hover effect on Desktop (hover doesn't exist on touch) */
+@media (min-width: 769px) {
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+}
+
+/* --- IMAGE AREA --- */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 220px; /* Fixed height container */
+  background-color: #f9fafb;
+}
+
+.productImage {
+  object-fit: contain;
+  padding: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .productImage {
+  transform: scale(1.05);
+}
+
+.noImage {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 80px; /* Matches your original height */
+  height: 100%;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+/* --- CONTENT AREA --- */
+.content {
   padding: 1rem;
-  
-  /* Typography */
-  text-decoration: none;
-  color: #374151;
+  flex: 1; /* Pushes footer to bottom */
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  font-size: 0.75rem;
   font-weight: 600;
-  text-align: center;
-  
-  /* Visuals */
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px; /* Softer, modern corners */
-  
-  /* Animation */
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  color: #6b7280;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
 }
 
-/* Hover Effects */
-.card:hover {
-  transform: translateY(-4px); /* The "Elevated" effect */
-  border-color: #3b82f6;
+.productTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+
+  /* Truncate title to 1 line */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+
+  /* Truncate description to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- FOOTER (Price & Button) --- */
+.footer {
+  margin-top: auto; /* Pushes this section to the bottom of card */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.price {
+  font-size: 1.1rem;
+  font-weight: 700;
   color: #2563eb;
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15);
 }
 
-.card:active {
-  transform: translateY(0);
-  box-shadow: none;
+.button {
+  background-color: #f3f4f6;
+  color: #1f2937;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* Loading State Styling */
-.loading {
-  padding: 2rem;
+.button:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+/* --- UTILITIES --- */
+.centerMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
   text-align: center;
   color: #6b7280;
-  font-size: 0.875rem;
+}
+
+.errorText {
+  margin-top: 1rem;
+  color: #ef4444;
+}
+
+@media (max-width: 850px){
+  .container{
+    padding-top: 20px;
+    margin: 0px 30px;
+  }
 }

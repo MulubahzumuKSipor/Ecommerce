@@ -158,3 +158,131 @@
   background-color: #f4f4f4;
   color: #0070f3;
 }
+
+
+
+
+/* Nav Component Container */
+.navbar {
+    position: relative;
+    /* On mobile, only the hamburger is visible */
+}
+
+/* Hamburger Menu Button */
+.hamburger {
+    display: none; /* Hidden by default on desktop */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    color: var(--text-color); /* Replace with your actual color variable */
+}
+
+/* Navigation List (Desktop/Mobile Styling) */
+/* .navList {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+} */
+
+/* Navigation Items (Desktop/Mobile Styling) */
+/* .navItem {
+    position: relative;
+    padding: 0 15px;
+} */
+
+/* --- Mobile View Media Query --- */
+@media (max-width: 875px) {
+
+      .navbar {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+        Arial, sans-serif;
+      padding: 0;
+      margin-left: 0;
+    }
+
+
+
+  /* If your nav content needs padding */
+  .navList {
+    margin-top: 0; /* ensure list isn't pushed down */
+  }
+
+    /* Show the hamburger menu */
+    .hamburger {
+        display: block;
+    }
+
+    /* The main list is hidden by default */
+    .navList {
+        position: absolute;
+        top: 100%; /* Position below the header/hamburger */
+        right: 0;
+        width: 300px; /* Adjust width as needed */
+        max-width: 90vw;
+        flex-direction: column;
+        background-color: var(--background-glass); /* Your background color */
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transform: translateX(100%); /* Start off-screen */
+        transition: transform 0.3s ease-in-out;
+        opacity: 0;
+        pointer-events: none;
+        padding: 10px 0;
+        align-items: stretch; /* Stretch items to fill the width */
+    }
+
+    /* When the mobile menu is open */
+    .navList.open {
+      background-color: wheat;
+      transform: translateX(0);
+      padding: 20px;
+      opacity: 1;
+      pointer-events: auto;
+      border-radius: 27px;
+      margin-top: 19px;
+    }
+
+    .navItem {
+        padding: 0; /* Remove horizontal padding from list item */
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separator */
+    }
+
+    .navItem:last-child {
+        border-bottom: none;
+    }
+
+    /* Style for buttons and links inside the mobile menu */
+    .navItem > a,
+    .navItem > button {
+        display: block;
+        padding: 10px 20px; /* Use padding to create clickable area */
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+    }
+
+    /* Ensure dropdowns take full width when open in mobile menu */
+    .megaMenu {
+        position: static;
+        width: 75%;
+        box-shadow: none;
+        border: none;
+        padding-left: 20px; /* Indent sub-menus */
+    }
+
+    .megaMenuColumn {
+        width: 100% !important;
+        padding: 5px 0 !important;
+    }
+
+    /* Hide the Cart button within the Nav, as it's now in the Header */
+    .cart {
+        display: none;
+    }
+}

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ShoppingCart, Loader2, AlertCircle } from "lucide-react";
 // Import the CSS Module
 import styles from "@/app/ui/styles/category.module.css";
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -92,38 +93,38 @@ export default function CategoryPage() {
 
       <div className={styles.grid}>
         {products.map((product) => (
-          <div key={product.id} className={styles.card}>
-            {/* Image Area */}
-            <div className={styles.imageWrapper}>
-              {product.image_url ? (
-                <Image
-                  src={product.image_url}
-                  alt={product.title}
-                  fill
-                  className={styles.productImage}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              ) : (
-                <div className={styles.noImage}>No Image</div>
-              )}
-            </div>
-
-            {/* Text Content */}
-            <div className={styles.content}>
-              <span className={styles.brand}>{product.brand}</span>
-              <h2 className={styles.title} style={{ fontSize: "1.125rem", marginBottom: "0.5rem" }}>
-                {product.title}
-              </h2>
-              <p className={styles.description}>{product.description}</p>
-
-              <div className={styles.footer}>
-                <span className={styles.price}>{formatPrice(product.price)}</span>
-                <button className={styles.button} aria-label="Add to cart">
-                  <ShoppingCart size={20} />
-                </button>
+          <Link key={product.id} href={`/shop/${product.id}`} className='link'>
+            <div className={styles.card}>
+              {/* Image Area */}
+              <div className={styles.imageWrapper}>
+                {product.image_url ? (
+                  <Image
+                    src={product.image_url}
+                    alt={product.title}
+                    fill
+                    className={styles.productImage}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className={styles.noImage}>No Image</div>
+                )}
+              </div>
+              {/* Text Content */}
+              <div className={styles.content}>
+                <span className={styles.brand}>{product.brand}</span>
+                <h2 className={styles.title} style={{ fontSize: "1.125rem", marginBottom: "0.5rem" }}>
+                  {product.title}
+                </h2>
+                <p className={styles.description}>{product.description}</p>
+                <div className={styles.footer}>
+                  <span className={styles.price}>{formatPrice(product.price)}</span>
+                  <button className={styles.button} aria-label="Add to cart">
+                    <ShoppingCart size={20} />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -1,0 +1,281 @@
+/* -------------------- Base Layout & Container -------------------- */
+.container {
+    min-height: 100vh;
+    background-color: #f3f4f6; /* bg-gray-100 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 3rem; /* py-12 */
+    padding-bottom: 3rem; /* py-12 */
+    font-family: 'Inter', sans-serif;
+}
+
+@media (min-width: 640px) {
+    .container {
+        padding-left: 1.5rem; /* sm:px-6 */
+        padding-right: 1.5rem; /* sm:px-6 */
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        padding-left: 2rem; /* lg:px-8 */
+        padding-right: 2rem; /* lg:px-8 */
+    }
+}
+
+/* -------------------- Form Header -------------------- */
+.headerWrapper {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 28rem; /* sm:max-w-md */
+}
+
+.title {
+    margin-top: 1.5rem; /* mt-6 */
+    text-align: center;
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 800; /* font-extrabold */
+    color: #1f2937; /* text-gray-900 */
+}
+
+.modeText {
+    margin-top: 0.5rem; /* mt-2 */
+    text-align: center;
+    font-size: 0.875rem; /* text-sm */
+    color: #4b5563; /* text-gray-600 */
+}
+
+.modeButton {
+    margin-left: 0.25rem; /* ml-1 */
+    font-weight: 500; /* font-medium */
+    color: #4f46e5; /* text-indigo-600 */
+    cursor: pointer;
+    transition: color 0.15s ease-in-out;
+}
+
+.modeButton:hover {
+    color: #6366f1; /* hover:text-indigo-500 */
+}
+
+/* -------------------- Form Card -------------------- */
+.formWrapper {
+    margin-top: 2rem; /* mt-8 */
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 28rem; /* sm:max-w-md */
+}
+
+.formCard {
+    background-color: #ffffff;
+    padding: 2rem 1rem; /* py-8 px-4 */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-2xl */
+    border-radius: 0.75rem; /* sm:rounded-xl */
+    border-top: 4px solid #4f46e5; /* border-t-4 border-indigo-600 */
+}
+
+@media (min-width: 640px) {
+    .formCard {
+        padding-left: 2.5rem; /* sm:px-10 */
+        padding-right: 2.5rem; /* sm:px-10 */
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* space-y-6 equivalent */
+}
+
+/* -------------------- Status Messages -------------------- */
+.successMessage {
+    background-color: #d1fae5; /* bg-green-100 */
+    border: 1px solid #34d399; /* border-green-400 */
+    color: #065f46; /* text-green-700 */
+    padding: 0.75rem 1rem; /* px-4 py-3 */
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    position: relative;
+}
+
+.errorMessage {
+    background-color: #fee2e2; /* bg-red-100 */
+    border: 1px solid #f87171; /* border-red-400 */
+    color: #b91c1c; /* text-red-700 */
+    padding: 0.75rem 1rem; /* px-4 py-3 */
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    position: relative;
+}
+
+/* -------------------- Inputs -------------------- */
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151; /* text-gray-700 */
+}
+
+.inputContainer {
+    margin-top: 0.25rem; /* mt-1 */
+    position: relative;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.iconWrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding-left: 0.75rem; /* pl-3 */
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.icon {
+    height: 1.25rem; /* h-5 */
+    width: 1.25rem; /* w-5 */
+    color: #9ca3af; /* text-gray-400 */
+}
+
+.inputField {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    padding-left: 2.5rem; /* pl-10 */
+    padding-right: 0.75rem; /* px-3 */
+    padding-top: 0.5rem; /* py-2 */
+    padding-bottom: 0.5rem; /* py-2 */
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    color: #1f2937;
+    font-size: 0.875rem; /* sm:text-sm */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.inputField::placeholder {
+    color: #9ca3af; /* placeholder-gray-400 */
+}
+
+.inputField:focus {
+    outline: none;
+    border-color: #4f46e5; /* focus:border-indigo-500 */
+    box-shadow: 0 0 0 1px #4f46e5; /* focus:ring-indigo-500 */
+}
+
+/* -------------------- Buttons -------------------- */
+.submitButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-md */
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ffffff;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.submitButtonEnabled {
+    background-color: #4f46e5; /* bg-indigo-600 */
+}
+
+.submitButtonEnabled:hover {
+    background-color: #4338ca; /* hover:bg-indigo-700 */
+}
+
+.submitButtonEnabled:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #4f46e5; /* focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 */
+}
+
+.submitButtonDisabled {
+    background-color: #818cf8; /* bg-indigo-400 */
+    cursor: not-allowed;
+}
+
+.loaderIcon {
+    width: 1.25rem; /* w-5 */
+    height: 1.25rem; /* h-5 */
+    margin-right: 0.5rem; /* mr-2 */
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* -------------------- Logged In View -------------------- */
+.loggedInContainer {
+    min-height: 100vh;
+    background-color: #f9fafb; /* bg-gray-50 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.loggedInCard {
+    background-color: #ffffff;
+    padding: 2rem 1rem; /* py-8 px-4 */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+    border-radius: 0.5rem; /* sm:rounded-lg */
+    border: 1px solid #bbf7d0; /* border-green-200 */
+}
+
+@media (min-width: 640px) {
+    .loggedInCard {
+        padding-left: 2.5rem; /* sm:px-10 */
+        padding-right: 2.5rem; /* sm:px-10 */
+    }
+}
+
+.loggedInTitle {
+    margin-top: 1.5rem;
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #10b981; /* text-green-600 */
+}
+
+.logoutButton {
+    margin-top: 1.5rem; /* mt-6 */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #dc2626; /* bg-red-600 */
+    transition: background-color 0.15s ease-in-out;
+}
+
+.logoutButton:hover {
+    background-color: #b91c1c; /* hover:bg-red-700 */
+}
+
+.logoutButton:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #dc2626; /* focus:ring-2 focus:ring-offset-2 focus:ring-red-500 */
+}

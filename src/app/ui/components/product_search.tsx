@@ -152,14 +152,8 @@ export default function ProductSearch({
           onKeyDown={(e) => {
             if (e.key === "Escape") setQuery("");
           }}
-          style={{
-            width: "350px",
-            flex: 1,
-            padding: "8px 12px",
-            borderRadius: 8,
-            border: "1px solid #ddd",
-            fontSize: 14,
-          }}
+          className="input"
+
         />
 
         {query ? (
@@ -203,19 +197,7 @@ export default function ProductSearch({
       {showSuggestions && (
         <div
           role="listbox"
-          style={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            right: 0,
-            background: "white",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            zIndex: 1000,
-            borderRadius: 6,
-            marginTop: 4,
-            maxHeight: 400,
-            overflowY: "auto",
-          }}
+          className="listbox"
         >
           {error && <div style={{ color: "crimson", padding: 12 }}>Error: {error}</div>}
 

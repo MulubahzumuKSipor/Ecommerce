@@ -2,7 +2,7 @@
 import styles from '@/app/ui/styles/detailed_product.module.css';
 import Image from 'next/image';
 import { StarIcon } from 'lucide-react';
-import LimitedProductList from '@/app/ui/components/shared/few_products';
+import ProductList from '@/app/ui/components/products';
 // import {Product}  from '@/app/types/product';
 
 interface ProductImage {
@@ -147,7 +147,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </section>
       </div>
 
-      <LimitedProductList />
+      <ProductList limit={4} />
     </div>
   );
 }

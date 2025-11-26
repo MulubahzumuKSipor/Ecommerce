@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
 
   images: {
     // One-liner (works in every Next.js version)
-    domains: ['images.openfoodfacts.org', 'cdn.dummyjson.com', 'drive.google.com'],
+    domains: ['images.openfoodfacts.org', 'cdn.dummyjson.com', 'drive.google.com', 'raw.githubusercontent.com'],
   },
 };
 

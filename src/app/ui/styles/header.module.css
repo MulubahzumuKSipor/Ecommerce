@@ -1,7 +1,7 @@
 /* --- header.module.css or shared layout.module.css --- */
 
 /* --- The Glass Header Container --- */
-.headerGlass {
+/* .headerGlass {
   padding: 20px 30px;
   display: flex;
   justify-content: space-between;
@@ -18,12 +18,12 @@
   background: linear-gradient(135deg, rgba(13, 71, 161, 0.3), rgba(66, 165, 245, 0.2));
   background-size: 200% 200%;
   animation: glassPulse 8s ease infinite;
-}
+} */
 
 .header{
   height: 60px;
   border-radius: 20px;
-  width: 100%;
+  /* width: 100%; */
   background: white;
   justify-content: space-evenly;
   align-items: center;
@@ -58,7 +58,7 @@
 }
 
 /* --- Nav Links (assuming Nav uses <a> or <Link>) --- */
-.headerGlass a {
+.header a {
   color: #160000;
   text-decoration: none;
   font-weight: 500;
@@ -67,7 +67,7 @@
   transition: all 0.3s ease;
 }
 
-.headerGlass a:hover {
+.header a:hover {
   color: #ffd600;
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
@@ -75,13 +75,76 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1110px) {
   .headerGlass {
     flex-direction: column;
     gap: 15px;
     padding: 20px;
   }
+  .header a {
+    gap: 0;
+    padding: 0;
+  }
   .logo {
     justify-content: center;
   }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    /* ... other existing styles ... */
+}
+
+/* New wrapper to keep Nav and Cart together on desktop,
+   but separate them for mobile */
+.nav_cart_wrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* Mobile-only cart (removed from Nav, placed in Header) */
+.mobileCart {
+    display: none; /* Hide by default for desktop */
+}
+
+/* Hide desktop search on mobile */
+.desktopSearch {
+    flex-grow: 1; /* Allows search bar to take up space on desktop */
+    max-width: 500px;
+}
+
+/* --- Mobile View Media Query --- */
+@media (max-width: 1110px) {
+    .header {
+        /* Ensure logo and nav/cart are on the same line,
+           and search is on a new line */
+        /* flex-wrap: wrap; */
+        padding: 10px 10px;
+    }
+    .title{display: none;}
+
+    .logo {
+        gap: 0;
+    }
+
+    /* Show mobile cart */
+    .mobileCart {
+        display: block;
+        margin-right: 10px; /* Space between cart and hamburger */
+    }
+
+    /* Hide search on the main row (it should be moved) */
+    .desktopSearch {
+        display: none;
+        order: 3; /* Push to a new line (if re-enabled) */
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .nav_cart_wrapper {
+        order: 2; /* Keep it after the logo */
+    }
 }

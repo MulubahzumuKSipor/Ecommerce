@@ -21,7 +21,7 @@ export async function GET(
     // 3. Run your query
     const { rows } = await pool.query(
       `
-      SELECT
+      SELECT DISTINCT ON (p.id)  -- Ensures only one row per product ID is returned
         p.id,
         p.title,
         p.description,
@@ -33,7 +33,8 @@ export async function GET(
       LEFT JOIN product_variants v ON p.id = v.product_id
       LEFT JOIN product_images i ON p.id = i.product_id
       WHERE pc.category_id = $1
-      ORDER BY p.title
+      -- Add an ORDER BY to choose which variant/image gets selected first
+      ORDER BY p.id, v.price ASC
       `,
       [categoryId]
     );

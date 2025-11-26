@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const { rows } = await pool.query(`
+    const searchParams = request.nextUrl.searchParams;
+    const limitParam = searchParams.get('limit');
+
+    let sqlQuery = `
       SELECT
         p.id AS product_id,
         p.title,
@@ -30,26 +33,23 @@ export async function GET() {
       LEFT JOIN product_categories pc ON pc.product_id = p.id
       LEFT JOIN categories c ON c.id = pc.category_id
       LEFT JOIN product_images i ON i.product_id = p.id
-      GROUP BY p.id, v.id, c.id;
-    `);
+      GROUP BY p.id, v.id, c.id
+      ORDER BY p.id DESC
+    `;
+
+    // FIX: Use (string | number)[] instead of any[]
+    const queryValues: (string | number)[] = [];
+
+    if (limitParam) {
+      sqlQuery += ` LIMIT $1`;
+      queryValues.push(parseInt(limitParam));
+    }
+
+    const { rows } = await pool.query(sqlQuery, queryValues);
+
     return NextResponse.json(rows);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
   }
 }
-
-// POST a new products
-// export async function POST(request: NextRequest) {
-//   try {
-//     const { name, email, password, phone } = await request.json();
-//     const { rows } = await pool.query(
-//       "INSERT INTO User(name, email, password, phone) VALUES($1, $2, $3, $4) RETURNING *",
-//       [name, email, password, phone]
-//     );
-//     return NextResponse.json(rows[0]);
-//   } catch (error) {
-//     console.error(error);
-//     return NextResponse.json({ error: "Failed to add user" }, { status: 500 });
-//   }
-// }
