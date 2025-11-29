@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     // One-liner (works in every Next.js version)
     domains: ['images.openfoodfacts.org', 'cdn.dummyjson.com', 'drive.google.com', 'raw.githubusercontent.com'],
   },
+  allowedDevOrigins: [
+    'https://turner-nonbranded-jabberingly.ngrok-free.dev',
+  ],
 };
 
 export default nextConfig;

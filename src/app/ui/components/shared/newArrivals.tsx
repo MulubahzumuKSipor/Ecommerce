@@ -6,17 +6,26 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Loader2, AlertCircle } from "lucide-react";
-// Assuming styles are accessible or imported relative to this component's location
 import styles from "@/app/ui/styles/arrivals.module.css"; 
 
-// Interface matching the final SQL output structure
 interface NewArrivalProduct {
     product_id: number;
     title: string;
     description: string | null;
     brand: string | null;
-    price: number | string | null;
-    image_url: string | null;
+    rating: number | null; // Added rating
+    variant_id: number | null; // Added variant_id
+    sku: string | null; // Added sku
+    price: number; // Price is essential, set as required number
+    compare_at_price: number | null; // Added compare_at_price
+    stock_quantity: number | null; // Added stock_quantity
+    category_id: number | null; // Added category_id
+    category_name: string | null; // Added category_name
+    images: {
+        image_url: string;
+        thumbnail_url: string;
+        display_order: number;
+    }[]; // This is the array returned by json_agg
 }
 
 // Define the component's props
@@ -32,35 +41,33 @@ const NewArrivalsList: React.FC<NewArrivalsListProps> = ({ limit, title = "✨ N
     const [error, setError] = useState<string | null>(null);
 
     // --- Data Fetching Hook (Refactored using useCallback) ---
-    // Function now depends on the 'limit' prop
     const fetchArrivals = useCallback(async () => {
         try {
             setError(null);
             setLoading(true);
 
-            // Use the 'limit' prop in the fetch URL
-            const apiUrl = `/api/new_arrivals?limit=${limit}`;
-            const res = await fetch(apiUrl);
+            // 🟢 FIX: Use the URL matching the component's expectation or the actual API file name
+            const apiUrl = `/api/products?limit=${limit}`; // Assuming you renamed the component or the API file is called 'products/route.ts'
+
+            const res = await fetch(apiUrl, {
+                 // Important for Client Components to ensure fresh data
+                 cache: 'no-store'
+            });
 
             if (!res.ok) {
                 throw new Error(`Failed to fetch new arrivals: HTTP status ${res.status}`);
             }
 
             const data = await res.json();
-
-            if (data.message) {
-                setProducts([]);
-            } else {
-                setProducts(data);
-            }
+            setProducts(data);
 
         } catch (err) {
             console.error("Fetch Error:", err);
-            setError("Could not load new arrivals.");
+            setError("Could not load new arrivals. Please check the server.");
         } finally {
             setLoading(false);
         }
-    }, [limit]); // Dependency array includes the 'limit' prop
+    }, [limit]);
 
     // Effect to run the fetch function whenever the limit prop changes
     useEffect(() => {
@@ -68,7 +75,7 @@ const NewArrivalsList: React.FC<NewArrivalsListProps> = ({ limit, title = "✨ N
     }, [fetchArrivals]);
 
     // --- Price Formatting Utility (Kept as is) ---
-    const formatPrice = (price: number | string | null) => {
+    const formatPrice = (price: number) => {
         if (price === null || isNaN(Number(price))) return "N/A";
         return new Intl.NumberFormat("en-US", {
             style: "currency",
@@ -99,8 +106,17 @@ const NewArrivalsList: React.FC<NewArrivalsListProps> = ({ limit, title = "✨ N
     // --- 🚀 Main Arrivals List ---
     return (
         <div className={styles.container}>
-            {/* Use the customizable title prop */}
-            <h1 className={styles.title}>{title}</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <h2 className={styles.heading} style={{ marginBottom: 0 }}>
+                    {title}
+                </h2>
+                {/* Optional: Show a "View All" link if we are limiting the view */}
+                {limit && (
+                    <Link href="/arrivals" style={{ fontSize: '14px', color: '#3b82f6', textDecoration: 'none' }}>
+                        View All &rarr;
+                    </Link>
+                )}
+            </div>
 
             {products.length === 0 ? (
                 <div className={styles.centerMessage} style={{ marginTop: '2rem' }}>
@@ -114,19 +130,24 @@ const NewArrivalsList: React.FC<NewArrivalsListProps> = ({ limit, title = "✨ N
                             <Link href={`/shop/${product.product_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <div className={styles.imageWrapper}>
                                     <div className={`${styles.statusTag} ${styles.newArrivalTag}`}>NEW</div>
-                                    {product.image_url ? (
-                                      <Image
-                                        src={product.image_url}
-                                        alt={product.title}
-                                        fill
-                                        className={styles.productImage}
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 30vw"
-                                      />) : (<div className={styles.noImage}>No Image</div> )}
+                                    {/* 🟢 FIX: Access the first image URL from the 'images' array */}
+                                    {product.images?.[0]?.image_url ? (
+                                        <Image
+                                          src={product.images[0].image_url}
+                                          alt={product.title}
+                                          fill
+                                          className={styles.productImage}
+                                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 30vw"
+                                        />
+                                    ) : (
+                                        <div className={styles.noImage}>No Image</div>
+                                    )}
                                 </div>
                                 <div className={styles.content}>
                                     <span className={styles.brand}>{product.brand ?? 'New Brand'}</span>
                                     <h2 className={styles.productTitle}>{product.title}</h2>
                                     <div className={styles.footer}>
+                                        {/* FIX: Ensure product.price is defined before calling formatPrice */}
                                         <span className={styles.price}>{formatPrice(product.price)}</span>
                                         <button
                                             className={styles.button}

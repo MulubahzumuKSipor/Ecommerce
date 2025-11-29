@@ -7,7 +7,7 @@ import { getRandomProducts } from "@/app/utilities/fetchRandom";
 import LandingPageSkeleton from "../skeletons/landing_page";
 
 export default function Landing() {
-  const api = "http://localhost:3000/api/products";
+  const api = "/api/products";
 
   const [products, setProducts] = useState<Product[]>([]);
   const [current, setCurrent] = useState(0);

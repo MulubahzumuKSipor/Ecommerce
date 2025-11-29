@@ -66,7 +66,7 @@
 /* === The Mega Menu === */
 .megaMenu {
     padding: 20px;
-    left: 75%;
+    /* left: 75%; */
   /* Positioning */
   position: absolute;
   /* top: 100%;
@@ -82,7 +82,7 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
   /* padding: 1.5rem 2rem; */
-  width: max-content; /* Make the menu as wide as its content */
+  /* width: max-content; Make the menu as wide as its content */
 }
 
 .main_wrapper {
@@ -237,7 +237,6 @@
 
     /* When the mobile menu is open */
     .navList.open {
-      background-color: wheat;
       transform: translateX(0);
       padding: 20px;
       opacity: 1;
@@ -245,6 +244,24 @@
       border-radius: 27px;
       margin-top: 19px;
     }
+
+    .navList.open {
+      /* Updated to a modern Blue-to-Yellow gradient */
+      background: linear-gradient(
+        135deg,
+        #0d47a1, /* Deep, rich blue */
+        #42a5f5, /* Brighter mid-point blue */
+        #ffd600  /* Vibrant, modern yellow */
+      );
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
 
     .navItem {
         padding: 0; /* Remove horizontal padding from list item */
@@ -285,4 +302,8 @@
     .cart {
         display: none;
     }
+}
+
+.Link{
+  border-bottom: 3px solid black;
 }

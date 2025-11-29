@@ -19,6 +19,7 @@
 
 /* Responsive Grid Logic */
 .grid {
+  margin: 0 30px;
   display: grid;
   /* Creates columns automatically that are at least 280px wide */
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -149,7 +150,7 @@
 @media (max-width: 850px){
   .container{
     margin: 0px 30px;
-    padding-top: 0px;
+    /* padding-top: 0px; */
   }
   .title{
     font-size: 1.5em;

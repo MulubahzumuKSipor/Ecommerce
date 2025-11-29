@@ -11,6 +11,17 @@
   margin-bottom: 10px;
 }
 
+.right{
+  position: absolute;
+  right: 0;
+}
+
+.left{
+  position: absolute;
+  left: 0;
+  top: 100%;
+}
+
 /* Default: Desktop/Tablet Grid Layout (min-width: 851px) */
 .grid {
   display: grid;
@@ -30,7 +41,7 @@
   background: white;
   text-decoration: none;
   color: inherit;
-  min-width: 150px;
+  /* min-width: 150px; */
 }
 
 .card:hover {
@@ -153,7 +164,7 @@
 }
 
 /* --- MOBILE CAROUSEL LOGIC (Max Width 768px) --- */
-@media (max-width: 768px) {
+@media (max-width: 849px) {
   .grid {
     display: flex;             /* Turn grid into a row */
     overflow-x: auto;          /* Enable horizontal scrolling */
@@ -189,14 +200,14 @@
   border-radius: 12px;
   overflow: hidden;
   background: white;
-  display: flex;
-  flex-direction: column;
+  /* display: flex; */
+  /* flex-direction: column; */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  height: 100%; /* Ensure equal height in grid view */
+  /* height: 100%;  */
 }
 
 /* Only hover effect on Desktop (hover doesn't exist on touch) */
-@media (min-width: 769px) {
+@media (min-width: 850px) {
   .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
@@ -327,5 +338,69 @@
   .container{
     padding-top: 20px;
     margin: 0px 30px;
+  }
+}
+
+
+
+/* Floating infinite animation */
+@keyframes float {
+  0% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-55%) translateX(0);
+  }
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+.arrowButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+  animation: float 2.8s ease-in-out infinite;
+  transition: background 0.2s ease, transform 0.2s ease box-shadow 0.2s ease;
+}
+
+/* Hover effect to enhance the float */
+.arrowButton:hover {
+  background: white;
+  animation: none;
+
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* Click effect */
+.arrowButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+
+
+/* Larger on desktop */
+@media (min-width: 851px) {
+  .arrowButton {
+    display: none;
   }
 }

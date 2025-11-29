@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import styles from "../styles/search.module.css"
 
 export type Product = {
   product_id?: number | string;
@@ -141,180 +142,153 @@ export default function ProductSearch({
   };
 
   return (
-    <div ref={containerRef} style={{ maxWidth: 900, margin: "0 auto", position: "relative" }}>
-      {/* Search input */}
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <input
-          aria-label="Search products"
-          type="search"
-          placeholder={placeholder}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setShowSuggestions(true)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setQuery("");
-              setShowSuggestions(false);
-            }
-          }}
-          className="input"
-        />
+      // Only applied to outer container
+      <div ref={containerRef} className={styles.searchBar}>
 
-        {query ? (
-          <button
-            aria-label="Clear search"
-            onClick={() => {
-              setQuery("");
-              setDebouncedQuery("");
-              setShowSuggestions(false);
+        {/* Changed class to inputWrapper */}
+        <div className={styles.inputWrapper}>
+          <input
+            className={styles.input}
+            aria-label="Search products"
+            type="search"
+            placeholder={placeholder}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setQuery("");
+                setShowSuggestions(false);
+              }
             }}
-            onMouseDown={(e) => e.preventDefault()} // prevent input blur before click
-            style={{
-              padding: "8px 10px",
-              borderRadius: 8,
-              border: "1px solid #ddd",
-              background: "#fff",
-              cursor: "pointer",
-            }}
-          >
-            ✕
-          </button>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="35"
-            height="34"
-            viewBox="0 0 24 24"
-            style={{ cursor: "pointer" }}
-            role="img"
-            aria-hidden
-          >
-            <g fill="none">
-              <path d="M0 0h24v24H0z" />
-              <path
-                fill="currentColor"
-                d="M10.5 2a8.5 8.5 0 0 1 6.676 13.762l3.652 3.652a1 1 0 0 1-1.414 1.414l-3.652-3.652A8.5 8.5 0 1 1 10.5 2m0 2a6.5 6.5 0 1 0 0 13a6.5 6.5 0 0 0 0-13m0 1a5.5 5.5 0 1 1 0 11a5.5 5.5 0 0 1 0-11"
-              />
-            </g>
-          </svg>
-        )}
-      </div>
+          />
 
-      {/* Suggestions dropdown */}
-      {showSuggestions && (
-        <div
-          role="listbox"
-          aria-label="Product suggestions"
-          className="listbox"
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            zIndex: 50,
-            background: "#fff",
-            border: "1px solid #eee",
-            borderRadius: 8,
-            marginTop: 8,
-            boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
-            maxHeight: 420,
-            overflow: "auto",
-          }}
-        >
-          {error && <div style={{ color: "crimson", padding: 12 }}>Error: {error}</div>}
-
-          {loading && !productsToSearch.length ? (
-            <div style={{ padding: 12 }}>Loading products…</div>
-          ) : filtered.length > 0 ? (
-            <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
-              {filtered.map((p) => {
-                const key = p.product_id ?? p.id ?? p.sku ?? Math.random();
-                const title = p.title ?? p.name ?? "Untitled product";
-                const imageUrl = p.images?.[0]?.image_url;
-                return (
-                  <li key={String(key)} role="option" style={{ marginBottom: 0 }}>
-                    <Link
-                      href={`/shop/${p.product_id ?? p.id}`}
-                      onClick={() => handleSelect(p)}
-                      style={{
-                        display: "flex",
-                        gap: 12,
-                        padding: 10,
-                        borderBottom: "1px solid #f1f1f1",
-                        alignItems: "center",
-                        textDecoration: "none",
-                        color: "inherit",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 64,
-                          height: 64,
-                          background: "#f6f6f6",
-                          borderRadius: 6,
-                          flexShrink: 0,
-                          overflow: "hidden",
-                        }}
-                      >
-                        {imageUrl ? (
-                          <Image
-                            src={imageUrl}
-                            alt={title}
-                            width={64}
-                            height={64}
-                            style={{ objectFit: "cover", borderRadius: 6 }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width: 64,
-                              height: 64,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              color: "#999",
-                            }}
-                          >
-                            No image
-                          </div>
-                        )}
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                          <div style={{ fontWeight: 600 }}>{title}</div>
-                          <div style={{ minWidth: 90, textAlign: "right" }}>
-                            ${safeFormatPrice(p.price)}
-                          </div>
-                        </div>
-                        <div style={{ fontSize: 13, color: "#666", marginTop: 6 }}>
-                          {p.brand ? `by ${p.brand}` : p.sku ? `sku: ${p.sku}` : null} •
-                          Stock: {p.stock_quantity ?? "N/A"}
-                        </div>
-                        {p.description && (
-                          <div style={{ marginTop: 6, color: "#444", fontSize: 13 }}>
-                            {String(p.description).slice(0, 120)}
-                            {String(p.description).length > 120 ? "…" : ""}
-                          </div>
-                        )}
-                      </div>
-                      <div style={{ fontSize: 13, color: "#0066cc", whiteSpace: "nowrap" }}>View →</div>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+          {query ? (
+            <button
+              aria-label="Clear search"
+              onClick={() => {
+                setQuery("");
+                setDebouncedQuery("");
+                setShowSuggestions(false);
+              }}
+              onMouseDown={(e) => e.preventDefault()}
+            >
+            {/* Simple X icon */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
           ) : (
-            <div style={{ padding: 12, color: "#666" }}>No results</div>
-          )}
-
-          {/* "See more" when there are more items on server */}
-          {productsToSearch.length > (filtered.length ?? 0) && (
-            <div style={{ marginTop: 10, padding: 10, textAlign: "right" }}>
-              <Link href={`/search?query=${encodeURIComponent(query)}`}>See more results →</Link>
-            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
           )}
         </div>
-      )}
-    </div>
-  );
+
+        {/* Suggestions dropdown */}
+        {showSuggestions && (
+          <div
+            role="listbox"
+            aria-label="Product suggestions"
+            className={styles.suggestionsDropdown}
+          >
+            {error && <div style={{ color: "crimson", padding: 12 }}>Error: {error}</div>}
+
+            {loading && !productsToSearch.length ? (
+              <div style={{ padding: "16px", color: "#64748b", textAlign: "center" }}>Loading...</div>
+            ) : filtered.length > 0 ? (
+              <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
+                {filtered.map((p) => {
+                  const key = p.product_id ?? p.id ?? p.sku ?? Math.random();
+                  const title = p.title ?? p.name ?? "Untitled product";
+                  const imageUrl = p.images?.[0]?.image_url;
+
+                  return (
+                    <li key={String(key)} role="option" style={{ marginBottom: 0 }}>
+                      <Link
+                        href={`/shop/${p.product_id ?? p.id}`}
+                        onClick={() => handleSelect(p)}
+                        className={styles.suggestionItem}
+                      >
+                        <div className={styles.images}>
+                          {imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={title}
+                              width={56}
+                              height={56}
+                              style={{ objectFit: "cover", display: "block" }}
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: 56,
+                                height: 56,
+                                backgroundColor: "#f1f5f9",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#cbd5e1",
+                                fontSize: "10px"
+                              }}
+                            >
+                              NO IMG
+                            </div>
+                          )}
+                        </div>
+
+                        <div className={styles.format}>
+                          <div className={styles.titlePrice}>
+                            <span className={styles.priceTitle}>{title}</span>
+                            <span className={styles.price}>
+                              ${safeFormatPrice(p.price)}
+                            </span>
+                          </div>
+
+                          <div className={styles.brand}>
+                            {p.brand || p.categories?.[0]?.name || "Generic"}
+                            {p.stock_quantity && p.stock_quantity < 5 && (
+                              <span style={{color: '#ef4444', marginLeft: '6px'}}>Only {p.stock_quantity} left</span>
+                            )}
+                          </div>
+
+                          {p.description && (
+                            <div className={styles.description}>
+                              {p.description}
+                            </div>
+                          )}
+                        </div>
+                        <div className={styles.view}>View</div>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <div style={{ padding: "24px", textAlign: "center", color: "#64748b" }}>
+                  {`No results found for ${query}`}
+              </div>
+            )}
+
+            {productsToSearch.length > (filtered.length ?? 0) && (
+              <div className={styles.seeMore}>
+                <Link href={`/search?query=${encodeURIComponent(query)}`}>See all {productsToSearch.length} results</Link>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
 }

@@ -6,6 +6,17 @@ import Link from "next/link";
 import styles from "@/app/ui/styles/category.module.css";
 import { ShoppingCart, Loader2, AlertCircle } from "lucide-react";
 
+// ---------------------------------------------------------------
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+// ---------------------------------------------------------------
+
 interface Product {
   product_id: number;
   title: string;
@@ -24,7 +35,9 @@ interface ProductListProps {
   limit?: number;
 }
 
-export const API_URL = "http://localhost:3000/api/products";
+// ✅ FIX: Use a relative path constant instead of the absolute URL.
+// This resolves the CORS/Origin mismatch when accessing the app via IP (192.168.x.x).
+const PRODUCTS_API_PATH = "/api/products";
 
 const ProductList: React.FC<ProductListProps> = ({ limit }) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -36,18 +49,28 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
       try {
         setLoading(true);
 
-        const url = new URL(API_URL);
-        if (limit) {
-          url.searchParams.append("limit", limit.toString());
-        }
+        // 1. Fetch the full list
+        // The browser automatically prepends the correct host (localhost or 192.168.x.x)
+        const url = PRODUCTS_API_PATH;
 
-        const response = await fetch(url.toString());
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch(url);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
 
         const json = await response.json();
-        const data: Product[] = Array.isArray(json.products) ? json.products : json;
+        const allProducts: Product[] = Array.isArray(json.products)
+          ? json.products
+          : json;
 
-        setProducts(data);
+        let finalProducts = allProducts;
+
+        // 2. If a limit is set, shuffle and slice the products array
+        if (limit) {
+          const shuffledProducts = shuffleArray(allProducts);
+          finalProducts = shuffledProducts.slice(0, limit);
+        }
+
+        setProducts(finalProducts);
       } catch (e) {
         if (e instanceof Error) setError(e.message);
         else setError("An unknown error occurred.");
@@ -58,6 +81,8 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
 
     fetchProducts();
   }, [limit]);
+
+  // --- Rendering Logic ---
 
   if (loading) {
     return (
@@ -86,13 +111,33 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>
-        {limit ? `Recommended ${limit} Products` : "All Products"}
-      </h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 24,
+        }}
+      >
+        <h2 className={styles.heading} style={{ marginBottom: 0 }}>
+          {limit ? "Recommended For You" : "Recommended Products"}
+        </h2>
 
-      {/* This div switches from a CSS Grid (Desktop)
-        to a Flexbox Carousel (Mobile) via CSS Media Queries
-      */}
+        {/* Optional: Show a "View All" link if we are limiting the view */}
+        {limit && (
+          <Link
+            href="/shop"
+            style={{
+              fontSize: "14px",
+              color: "#3b82f6",
+              textDecoration: "none",
+            }}
+          >
+            View All &rarr;
+          </Link>
+        )}
+      </div>
+
       <div className={styles.grid}>
         {products.map((product) => {
           const imageObj = product.images?.[0];
@@ -102,7 +147,12 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
             <div key={product.product_id} className={styles.card}>
               <Link
                 href={`/shop/${product.product_id}`}
-                style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', height: '100%' }}
+                style={{
+                  textDecoration: "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                }}
               >
                 <div className={styles.imageWrapper}>
                   {imageObj ? (
@@ -111,10 +161,6 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
                       alt={product.title}
                       fill
                       className={styles.productImage}
-                      /* OPTIMIZATION:
-                        Mobile: 85vw (Since card is 85% width)
-                        Desktop: Standard grid sizes
-                      */
                       sizes="(max-width: 768px) 85vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   ) : (
@@ -122,19 +168,25 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
                   )}
                 </div>
                 <div className={styles.content}>
-                  <span className={styles.brand}>{product.brand ?? `SKU: ${product.sku}`}</span>
-                  <h2 className={styles.productTitle} title={product.title}>{product.title}</h2>
+                  <span className={styles.brand}>
+                    {product.brand ?? `SKU: ${product.sku}`}
+                  </span>
+                  <h2 className={styles.productTitle} title={product.title}>
+                    {product.title}
+                  </h2>
                   <p className={styles.description}>{defaultDescription}</p>
 
                   <div className={styles.footer}>
-                    <span className={styles.price}>{formatPrice(product.price)}</span>
+                    <span className={styles.price}>
+                      {formatPrice(product.price)}
+                    </span>
                     <button
                       className={styles.button}
                       aria-label="Add to cart"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation(); // Prevents clicking the Link when clicking button
-                        console.log('Added to cart:', product.title);
+                        console.log("Added to cart:", product.title);
                       }}
                     >
                       <ShoppingCart size={18} />

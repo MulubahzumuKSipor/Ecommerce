@@ -272,8 +272,10 @@ export default function Nav() {
                 Register
               </Link>
             </li>
+
           </>
         )}
+        <CartButton />
       </ul>
     </nav>
   );
