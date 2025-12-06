@@ -28,6 +28,7 @@
   justify-content: space-evenly;
   align-items: center;
   display: flex;
+  margin: 0 70px;
   }
 
 @keyframes glassPulse {
@@ -85,7 +86,7 @@
   }
   .header a {
     gap: 0;
-    padding: 0;
+    padding: 8px 0;
   }
   .logo {
     justify-content: center;
@@ -120,11 +121,13 @@
 
 /* --- Mobile View Media Query --- */
 @media (max-width: 1110px) {
+
     .header {
         /* Ensure logo and nav/cart are on the same line,
            and search is on a new line */
         /* flex-wrap: wrap; */
         padding: 10px 10px;
+        margin: 0 20px;
     }
     .title{display: none;}
 

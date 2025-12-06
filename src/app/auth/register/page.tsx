@@ -1,239 +1,143 @@
-'use client';
-import { useState, FormEvent, ChangeEvent } from 'react';
-import styles from '@/app/ui/styles/register.module.css';
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Loader2, CheckCircle, XCircle } from 'lucide-react'
+import styles from '@/app/ui/styles/register.module.css'
+import Link from 'next/link'
 
-// Define the type for the actual API response structure expected from /api/register
-interface RegisterResponse {
-    message: string;
-    user: {
-        id: number;
-        email: string;
-    };
-    token: string;
+interface FormState {
+  username: string
+  email: string
+  phone: string
+  password: string
 }
 
-// --- Constants ---
-const REGISTER_API_URL = '/api/register';
-const AUTH_TOKEN_KEY = 'ecommerce_auth_token'; // Key for storing the JWT token
-
-// --- RegisterPage Component ---
-
 export default function RegisterPage() {
-    // Note: The 'name' state is mapped to 'username' in the API call
-    const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [phone, setPhone] = useState<string>(''); // Added for backend requirement
-    const [password, setPassword] = useState<string>('');
-    const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter()
+  const [form, setForm] = useState<FormState>({
+    username: '',
+    email: '',
+    phone: '',
+    password: '',
+  })
+  const [error, setError] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
-    // Mock the router hook for demonstration of client-side navigation
-    const router = {
-        push: (path: string) => {
-            console.log(`[Navigation] Redirecting to: ${path}`);
-            window.location.href = path;
-        }
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        setLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setMessage(null)
+    setLoading(true)
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.');
-            setLoading(false);
-            return;
-        }
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
 
-        try {
-            // Call the real API endpoint
-            const response = await fetch(REGISTER_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // Send data required by the backend API: email, password, username, and phone
-                body: JSON.stringify({
-                    email,
-                    password,
-                    username: name,
-                    phone,
-                }),
-            });
-            
-            // Parse response body. The data structure matches the RegisterResponse interface.
-            const data: RegisterResponse = await response.json();
+      const data = await res.json()
 
-            if (!response.ok) {
-                // Throw an error if the status is not 2xx (e.g., 409 Conflict, 400 Bad Request)
-                throw new Error(data.message || 'Registration failed due to an unknown error.');
-            }
+      if (!res.ok) throw new Error(data.error || 'Registration failed')
 
-            // Successful registration
-            // 1. Save the token for persistent login
-            localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+      // Show success message and clear form
+      setMessage('Registration successful! Check your email to verify your account.')
+      setForm({ username: '', email: '', phone: '', password: '' })
 
-            console.log('Registration successful, token saved:', data.token);
+      // Optional: redirect after a few seconds
+      setTimeout(() => {
+        router.push('/auth/resend')
+      }, 4000)
 
-            // 2. Redirect to the homepage
-            router.push('/');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setLoading(false)
+    }
+  }
 
-        } catch (err: unknown) {
-            // Handle network errors or API-specific errors (like user already exists)
-            setError(err instanceof Error ? err.message : 'An unexpected error occurred during registration.');
-            localStorage.removeItem(AUTH_TOKEN_KEY); // Clear potentially stale token
-        } finally {
-            setLoading(false);
-        }
-    };
+  return (
+    <div className={styles.container}>
+      <div className={styles.registerCard}>
+        <h1 className={styles.title}>Create Your Account</h1>
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.headerWrapper}>
-                <h2 className={styles.title}>
-                    Create a new account
-                </h2>
-                <p className={styles.subtitle}>
-                    Already have an account?
-                    <a href="/auth/login" className={styles.link}>
-                        Sign in
-                    </a>
-                </p>
-            </div>
+        {/* --- Message Area --- */}
+        {message && (
+          <p className={styles.message}>
+            <CheckCircle size={18} style={{ marginRight: 8 }} />
+            {message}
+          </p>
+        )}
+        {error && (
+          <p className={styles.error}>
+            <XCircle size={18} style={{ marginRight: 8 }} />
+            {error}
+          </p>
+        )}
 
-            <div className={styles.formWrapper}>
-                <div className={styles.formBox}>
-                    <form className={styles.form} onSubmit={handleSubmit}>
+        {/* --- Form --- */}
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={form.username}
+            onChange={handleChange}
+            required
+            className={styles.input}
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className={styles.input}
+            autoComplete="email"
+          />
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone Number (Optional)"
+            value={form.phone}
+            onChange={handleChange}
+            className={styles.input}
+            // phone is marked as required in the user's JSX, but optional in placeholder - removed 'required' here for better UX
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password (Min. 8 characters)"
+            value={form.password}
+            onChange={handleChange}
+            required
+            className={styles.input}
+            autoComplete="new-password"
+          />
 
-                        {/* Name/Username Input */}
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="name" className={styles.label}>
-                                Full Name / Username
-                            </label>
-                            <div className={styles.inputWrapper}>
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    autoComplete="name"
-                                    required
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className={styles.input}
-                                    placeholder="Jane Doe"
-                                />
-                            </div>
-                        </div>
+          <button type="submit" disabled={loading} className={styles.button}>
+            {loading ? (
+              <span className={styles.loadingState}>
+                <Loader2 className={styles.spinner} size={20} />
+                Registering...
+              </span>
+            ) : (
+              'Register'
+            )}
+          </button>
+        </form>
 
-                        {/* Email Input */}
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="email" className={styles.label}>
-                                Email address
-                            </label>
-                            <div className={styles.inputWrapper}>
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className={styles.input}
-                                    placeholder="you@example.com"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Phone Input */}
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="phone" className={styles.label}>
-                                Phone Number
-                            </label>
-                            <div className={styles.inputWrapper}>
-                                <input
-                                    id="phone"
-                                    name="phone"
-                                    type="tel"
-                                    autoComplete="tel"
-                                    required
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    className={styles.input}
-                                    placeholder="(555) 123-4567"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Password Input */}
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="password" className={styles.label}>
-                                Password
-                            </label>
-                            <div className={styles.inputWrapper}>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="new-password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className={styles.input}
-                                    placeholder="•••••••• (Min 6 characters)"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Confirm Password Input */}
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="confirmPassword" className={styles.label}>
-                                Confirm Password
-                            </label>
-                            <div className={styles.inputWrapper}>
-                                <input
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    type="password"
-                                    autoComplete="new-password"
-                                    required
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className={styles.input}
-                                    placeholder="••••••••"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Error Message */}
-                        {error && (
-                            <div className={styles.error} role="alert">
-                                {error}
-                            </div>
-                        )}
-
-                        {/* Submit Button */}
-                        <div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className={`${styles.button} ${loading ? styles.buttonDisabled : ""}`}
-                            >
-                                {loading ? (
-                                    <svg className={styles.spinner} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className={styles.spinnerCircle} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className={styles.spinnerPath} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                ) : (
-                                    'Register Account'
-                                )}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        {/* Footer Link */}
+        <div className={styles.footerLink}>
+            <p>Already have an account? <Link href="/auth/login">Login here</Link></p>
         </div>
-    );
+      </div>
+    </div>
+  )
 }

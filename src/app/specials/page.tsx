@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ShoppingCart, Loader2, AlertCircle } from "lucide-react";
 // Assuming the CSS module is located here
 import styles from "@/app/ui/styles/specials.module.css"; 
+import AddToCartButton from "../ui/components/buttons/add-to-cart";
 
 // Interface matching the final SQL output structure (ProductSummary CTE result)
 interface SpecialProduct {
@@ -146,16 +147,7 @@ export default function SpecialsPage() {
 
                 <div className={styles.footer}>
                   <span className={styles.price}>{formatPrice(product.price)}</span>
-                  <button 
-                    className={styles.button} 
-                    aria-label={`Add ${product.title} to cart`}
-                    onClick={(e) => { 
-                        e.preventDefault(); 
-                        alert(`Added product ${product.product_id} to cart!`); 
-                    }}
-                  >
-                    <ShoppingCart size={20} />
-                  </button>
+                  <AddToCartButton productVariantId={product.product_id} quantity={1} />
                 </div>
               </div>
             </Link>

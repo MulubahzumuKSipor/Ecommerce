@@ -5,9 +5,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { ShoppingCart, Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import styles from "@/app/ui/styles/category.module.css";
 import Link from "next/link";
+import AddToCartButton from "@/app/ui/components/buttons/add-to-cart";
 
 interface Product {
     product_id: number; // Use product_id to match SQL output
@@ -141,9 +142,7 @@ export default function CategoryPage() {
                                 <p className={styles.description}>{product.description}</p>
                                 <div className={styles.footer}>
                                     <span className={styles.price}>{formatPrice(product.price)}</span>
-                                    <button className={styles.button} aria-label="Add to cart">
-                                        <ShoppingCart size={20} />
-                                    </button>
+                                    <AddToCartButton productVariantId={product.product_id} quantity={1} />
                                 </div>
                             </div>
                         </div>

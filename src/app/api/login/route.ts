@@ -1,67 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { createClient } from "@supabase/supabase-js";
 
-interface User {
-  id: number;
-  email: string;
-  password_hash: string;
-  username: string;
-  phone: string;
-}
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseAnonKey = process.env.SUPABASE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { email, password } = body;
-
-  if (!email || !password) {
-    return NextResponse.json(
-      { message: "Email and password are required." },
-      { status: 400 }
-    );
-  }
-
-  if (!JWT_SECRET) {
-    return NextResponse.json(
-      { message: "Server configuration error." },
-      { status: 500 }
-    );
-  }
-
+export async function POST(request: NextRequest) {
   try {
-    const userResult = await pool.query<User>(
-      "SELECT id, email, password_hash FROM users WHERE email = $1",
-      [email]
-    );
+    const { email, password } = await request.json();
 
-    if (userResult.rows.length === 0) {
-      return NextResponse.json({ message: "Invalid credentials." }, { status: 401 });
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
-    const user = userResult.rows[0];
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    // 1️⃣ Authenticate via Supabase
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (!isMatch) {
-      return NextResponse.json({ message: "Invalid Password and Email." }, { status: 401 });
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 401 });
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    if (!data.user?.email_confirmed_at) {
+      return NextResponse.json({ error: "Please verify your email before logging in." }, { status: 403 });
+    }
+
+    const userId = data.user.id;
+
+    // 2️⃣ Fetch user info from PostgreSQL
+    const { rows } = await pool.query("SELECT id, username, email, phone, role, status, created_at, updated_at, user_id FROM users WHERE user_id = $1", [userId]);
+    if (!rows.length) {
+      return NextResponse.json({ error: "User profile not found." }, { status: 404 });
+    }
+
+    const user = rows[0];
 
     return NextResponse.json({
       message: "Login successful.",
-      user: { id: user.id, email: user.email },
-      token,
+      user,
+      access_token: data.session?.access_token
     });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { message: "Internal server error." },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: err || "Server error" }, { status: 500 });
   }
 }

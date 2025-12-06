@@ -1,48 +1,69 @@
-import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+// app/api/register/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import pool from "@/lib/db";
+import { createClient } from "@supabase/supabase-js";
 
-const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET;
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseAnonKey = process.env.SUPABASE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const { email, password, username, phone } = body;
+interface RegisterRequestBody {
+  username: string;
+  email: string;
+  phone: string;
+  password: string;
+}
 
-  if (!email || !password || !username || !phone) {
-    return NextResponse.json({ message: 'All fields required.' }, { status: 400 });
-  }
+interface ApiResponse {
+  message?: string;
+  error?: string;
+  user?: string | object | null | undefined;
+}
 
-  if (!JWT_SECRET) {
-    console.error("JWT_SECRET missing");
-    return NextResponse.json({ message: 'Server misconfiguration.' }, { status: 500 });
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    // Check existing user
-    const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
-    if (existingUser.rows.length > 0) {
-      return NextResponse.json({ message: 'User already exists.' }, { status: 409 });
+    const body: RegisterRequestBody = await req.json();
+    const { username, email, phone, password } = body;
+
+    // Validate input
+    if (!username || !email || !phone || !password) {
+      return NextResponse.json<ApiResponse>({ error: "All fields are required" }, { status: 400 });
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+    // 1️⃣ Create user in Supabase and send verification email
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/resend`, // redirect after verification
+      },
+    });
 
-    // Insert user
-    const newUser = await pool.query(
-      'INSERT INTO users (username, email, password_hash, phone) VALUES ($1, $2, $3, $4) RETURNING id, email, username',
-      [username, email, passwordHash, phone]
+    if (signUpError) {
+      return NextResponse.json<ApiResponse>({ error: signUpError.message }, { status: 400 });
+    }
+
+    const userId = signUpData.user?.id;
+    if (!userId) {
+      return NextResponse.json<ApiResponse>({ error: "Failed to create user" }, { status: 500 });
+    }
+
+    // 2️⃣ Save user info in PostgreSQL (without password)
+    const { rows } = await pool.query(
+      `INSERT INTO users (
+        username, email, phone, role, status, user_id
+      ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [username, email, phone, "user", "pending", userId]
     );
 
-    const user = newUser.rows[0];
-
-    // Generate JWT
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
-
-    return NextResponse.json({ message: 'User created.', user: { id: user.id, email: user.email }, token }, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
+    // 3️⃣ Return success message
+    return NextResponse.json<ApiResponse>({
+      message: "User registered. Please check your email to verify your account.",
+      user: rows[0],
+    });
+  } catch (err: unknown) {
+    console.error(err);
+    const message = err instanceof Error ? err.message : "Server error";
+    return NextResponse.json<ApiResponse>({ error: message }, { status: 500 });
   }
 }

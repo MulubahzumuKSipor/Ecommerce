@@ -1,79 +1,42 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import styles from "@/app/ui/styles/cart_button.module.css";
-import { readLocalCart, CartItem } from "@/lib/cart";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { useCart } from "@/lib/cart-provider"
+import styles from "@/app/ui/styles/cart_button.module.css"
 
-interface CartButtonProps {
-  /** Optional callback fired when the mini-cart opens. */
-  onOpen?: () => void;
-  /** Are they logged in? */
-  loggedIn?: boolean;
-  /** Optional API endpoint to fetch cart from server */
-  apiUrl?: string;
-}
+export default function CartButton() {
+  const { items, addToCart, updateCartItem, removeFromCart } = useCart()
+  const [open, setOpen] = useState(false)
+  const [bump, setBump] = useState(false)
 
-const CartButton: React.FC<CartButtonProps> = ({
-  onOpen = () => {},
-  loggedIn = false,
-  apiUrl = "/api/cart-items",
-}) => {
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState<CartItem[]>([]);
+  // Total count
+  const count = items.reduce((acc, item) => acc + item.quantity, 0)
 
-  // Count is derived from items
-  const count = items.reduce((acc, i) => acc + i.quantity, 0);
-
-  const toggleOpen = () => {
-    const next = !open;
-    setOpen(next);
-    if (next) onOpen();
-  };
-
-  // Fetch cart on mount and listen for updates
+  // Trigger bump animation when cart updates
   useEffect(() => {
-    const fetchCart = async () => {
-      if (loggedIn) {
-        try {
-          const res = await fetch(apiUrl);
-          if (!res.ok) throw new Error("Failed to fetch cart");
-          const data: CartItem[] = await res.json();
-          setItems(data);
-        } catch (error: unknown) {
-          if (error instanceof Error) console.error(error.message);
-          else console.error(error);
-          setItems([]);
-        }
-      } else {
-        setItems(readLocalCart());
-      }
-    };
+  if (count === 0) return
 
-    fetchCart();
+  // Wrap in setTimeout to avoid synchronous state update
+  const timer1 = setTimeout(() => setBump(true), 0)
+  const timer2 = setTimeout(() => setBump(false), 300)
 
-    const handleUpdate = () => fetchCart();
-    window.addEventListener("cart:update", handleUpdate);
-    return () => window.removeEventListener("cart:update", handleUpdate);
-  }, [loggedIn, apiUrl]);
+  return () => {
+    clearTimeout(timer1)
+    clearTimeout(timer2)
+  }
+}, [count])
 
-  // Optional bump animation when cart count changes
-  useEffect(() => {
-    if (count > 0) {
-      const el = document.querySelector(`.${styles.cartCount}`);
-      el?.classList.add(styles.bump);
-      const timeout = setTimeout(() => el?.classList.remove(styles.bump), 300);
-      return () => clearTimeout(timeout);
-    }
-  }, [count]);
+  // Toggle drawer
+  const toggleOpen = () => setOpen(prev => !prev)
 
   return (
     <div className={styles.container}>
+      {/* Cart Button */}
       <button
         type="button"
-        className={styles.cartButton}
+        className={`${styles.cartButton} ${bump ? styles.bump : ""}`}
         aria-label={`Shopping cart, ${count} item${count === 1 ? "" : "s"}`}
-        aria-expanded={open}
         onClick={toggleOpen}
       >
         <svg
@@ -89,18 +52,14 @@ const CartButton: React.FC<CartButtonProps> = ({
           />
         </svg>
 
-        {count > 0 && (
-          <span className={styles.cartCount} aria-hidden="true">
-            {count}
-          </span>
-        )}
+        {count > 0 && <span className={styles.cartCount}>{count}</span>}
       </button>
 
+      {/* Mini Cart Drawer */}
       <aside
         className={`${styles.miniCart} ${open ? styles.open : ""}`}
         role="region"
         aria-label="Mini shopping cart"
-        aria-live="polite"
       >
         <div className={styles.miniCartHeader}>
           <strong>Your cart</strong>
@@ -118,25 +77,53 @@ const CartButton: React.FC<CartButtonProps> = ({
             <p className={styles.emptyText}>Your cart is empty.</p>
           ) : (
             <ul className={styles.itemsList}>
-              {items.map((item) => (
-                <li key={item.product_variant_id}>
-                  Product: {item.productId} Variant: {item.variantId || "-"} Qty:{" "}
-                  {item.quantity}
+              {items.map(item => (
+                <li key={item.cart_item_id} className={styles.item}>
+                  <div className={styles.itemInfo}>
+                    <span className={styles.itemTitle}>{item.product_title}</span>
+                    <span>${(item.price * item.quantity).toFixed(2)}</span>
+                  </div>
+
+                  <div className={styles.itemControls}>
+                    <button
+                      disabled={item.quantity <= 1}
+                      onClick={() => updateCartItem(item.cart_item_id, item.quantity - 1)}
+                      className={styles.quantityButton}
+                    >
+                      -
+                    </button>
+                    <span className={styles.quantity}>{item.quantity}</span>
+                    <button
+                      onClick={() => updateCartItem(item.cart_item_id, item.quantity + 1)}
+                      className={styles.quantityButton}
+                    >
+                      +
+                    </button>
+
+                    <button
+                      onClick={() => removeFromCart(item.cart_item_id)}
+                      className={styles.removeButton}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        <div className={styles.miniCartFooter}>
-          <Link href="/cart">
-            <button className={styles.viewCartButton}>View cart</button>
-          </Link>
-          <button className={styles.checkoutButton}>Checkout</button>
-        </div>
+        {items.length > 0 && (
+          <div className={styles.miniCartFooter}>
+            <Link href="/cart">
+              <button className={styles.viewCartButton}>View cart</button>
+            </Link>
+            <Link href="/checkout">
+              <button className={styles.checkoutButton}>Checkout</button>
+            </Link>
+          </div>
+        )}
       </aside>
     </div>
-  );
-};
-
-export default CartButton;
+  )
+}

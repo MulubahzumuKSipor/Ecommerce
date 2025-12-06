@@ -1,3 +1,77 @@
+/* --- Skeleton Loading Styles --- */
+
+/* 1. Define the Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+/* 2. Base Skeleton Placeholder Styling */
+.skeletonBg {
+    /* Base grey color for placeholders */
+    background-color: #e2e8f0 !important; 
+}
+
+.skeletonText {
+    height: 12px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    
+    /* Apply Shimmer effect */
+    background: linear-gradient(to right, #f2f2f2 8%, #ddd 18%, #f2f2f2 33%);
+    background-size: 800px 100px;
+    animation: shimmer 1.5s infinite linear;
+}
+
+/* 3. Placeholder Dimensions */
+.skeletonShort {
+    width: 30%; /* For Brand */
+}
+
+.skeletonMedium {
+    width: 60%; /* For Title and Price */
+    height: 16px; /* Slightly taller for titles/prices */
+}
+
+.skeletonLong {
+    width: 100%; /* For Description line 1 */
+}
+
+.skeletonLowStock {
+    width: 45%; /* For low stock warning line */
+}
+
+.skeletonButton {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #cfd8e5 !important; /* Muted color for the button placeholder */
+}
+
+.skeletonTag {
+    width: 80px;
+    height: 24px;
+    border-radius: 99px;
+    background-color: #cfd8e5 !important;
+    top: 12px;
+    left: 12px;
+    position: absolute;
+}
+
+/* 4. Disable Hover/Lift on Skeleton Card */
+.skeletonCard:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.skeletonCard a {
+    pointer-events: none; /* Prevents clicks on links during loading */
+}
+
 /* --- Variables for consistent theming --- */
 .container {
   --primary-color: #0f172a;       /* Dark Slate */
@@ -14,7 +88,7 @@
 
   max-width: 1400px;
   margin: 0 auto;
-  padding: 7rem 5.5rem;
+  padding: 2rem 1.5rem;
   background-color: var(--bg-page);
   min-height: 100vh;
   font-family: system-ui, -apple-system, sans-serif;
@@ -227,6 +301,10 @@
   .title {
     font-size: 1.75rem;
     margin-bottom: 2rem;
+  }
+
+  .container {
+    padding: 1rem;
   }
 
   .grid {

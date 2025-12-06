@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Tilt_Prism } from "next/font/google";
 import "./globals.css";
 import Header from "../app/ui/components/shared/header";
 import Footer from "../app/ui/components/shared/footer";
+import { CartProvider } from "@/lib/cart-provider";
 
 
 const tiltPrism = Tilt_Prism({
@@ -34,9 +35,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${tiltPrism.variable}`}>
+        <CartProvider>
         <Header/>
         {children}
         <Footer/>
+        </CartProvider>
       </body>
     </html>
   );

@@ -1,134 +1,119 @@
-"use client";
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
+import { Loader2, Send } from 'lucide-react'
+import styles from '@/app/ui/styles/login.module.css'
+import Link from 'next/link'
+import { supabase } from '@/lib/client'
 
-import { useState } from "react";
-import styles from "@/app/ui/styles/login.module.css";
-import { useRouter } from "next/navigation";
-import error from "next/error";
-import Link from "next/link";
-
-// --- Interfaces ---
-interface LoginForm {
-  email: string;
-  password: string;
-}
-
-interface LoginResponse {
-  message: string;
-  user?: {
-    id: number;
-    email: string;
-  };
-  token?: string; // Should ideally be set via HTTP-Only Cookie
+interface FormState {
+  email: string
+  password: string
 }
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null); // New state for success
+  const router = useRouter()
+  const [form, setForm] = useState<FormState>({ email: '', password: '' })
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [unverified, setUnverified] = useState(false)
 
-  // Destructure form for cleaner usage in JSX/logic
-  const { email, password } = form;
-
-  // --- Handle input change ---
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
 
-  // --- Handle form submit ---
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(null); // Clear success message
-
-    // 1. Basic Client-Side Validation
-    if (!email || !password) {
-      setError("Please enter both email and password.");
-      setLoading(false);
-      return;
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setUnverified(false)
+    setLoading(true)
 
     try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: form.email,
+        password: form.password,
+      })
 
-      const data: LoginResponse = await res.json();
-
-      if (!res.ok) {
-        // Throw the error message from the backend response
-        throw new Error(data.message || "Login failed due to an unknown error.");
+      if (signInError) {
+        if (signInError.message.includes('Email not confirmed')) {
+          setUnverified(true)
+          return
+        }
+        throw new Error(signInError.message)
       }
 
-      // 2. Save JWT (RECOMMENDATION: Use HTTP-Only Cookies for security)
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      if (!data.session) {
+        throw new Error('Login failed')
       }
 
-      // 3. Success Feedback and Redirection
-      setSuccess("Login successful! Redirecting...");
-
-      // Delay redirection slightly to allow success message to display (optional)
-      setTimeout(() => {
-        router.push("/");
-      }, 500);
-
-    } catch (err: unknown) {
-      // 4. Improved Error Handling
-      const errorMessage =
-        err instanceof Error ? err.message : "An unexpected network error occurred during login.";
-      setError(errorMessage);
+      // Login successful — redirect
+      router.push('/')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-return (
-    <div className={styles.login}>
+  return (
+    <div className={styles.container}>
+      <div className={styles.loginCard}> {/* New Card Wrapper */}
+        <h1 className={styles.title}>Welcome Back 👋</h1>
+
+        {/* --- Message Area --- */}
         {error && <p className={styles.error}>{error}</p>}
-        {success && <p className={styles.success}>{success}</p>}
-        <form className={styles.loginForm} onSubmit={handleSubmit}>
-            <legend className={styles.title}><h1>Login Form</h1></legend>
-            <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={email} // Use destructured variable
-          onChange={handleChange}
-          className={styles.input}
-          aria-label="Email"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={password} // Use destructured variable
-          onChange={handleChange}
-          className={styles.input}
-          aria-label="Password"
-          required
-        />
+        {unverified && (
+          <p className={styles.unverified}>
+            <Send size={18} style={{ marginRight: 8 }} />
+            Your email is not verified. Please check your inbox.
+            <a href="/auth/resend" className={styles.resendLink}>
+              Resend verification email
+            </a>
+          </p>
+        )}
 
-        <button
-          type="submit"
-          className={styles.button}
-          disabled={loading}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
+        {/* --- Form --- */}
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className={styles.input}
+            autoComplete="email"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            className={styles.input}
+            autoComplete="current-password"
+          />
 
-        <p className={styles.footer}>
-            If you do not have an account | <Link href={'/auth/register'}>Sign Up</Link>
-        </p>
+          <button type="submit" disabled={loading} className={styles.button}>
+            {loading ? (
+              <span className={styles.loadingState}>
+                <Loader2 className={styles.spinner} size={20} />
+                Authenticating...
+              </span>
+            ) : (
+              'Login'
+            )}
+          </button>
         </form>
 
+        {/* Optional Footer Link */}
+        <div className={styles.footerLink}>
+            <p>{"Don't have an account? "}<Link href="/auth/register">Sign up</Link></p>
+        </div>
+
+      </div>
     </div>
-  );
+  )
 }
-
-

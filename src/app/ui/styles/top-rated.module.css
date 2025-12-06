@@ -20,7 +20,7 @@
 /* --- Grid Layout --- */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 24px;
 }
 
@@ -156,4 +156,11 @@
   font-size: 14px;
   text-decoration: line-through;
   color: #94a3b8;
+}
+
+@media (max-width: 850px) {
+  .container{
+    margin: 0 35px;
+  }
+
 }

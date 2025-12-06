@@ -1,161 +1,184 @@
+/* --- Variables for Theming --- */
+.container {
+  --primary-color: #3b82f6; /* Blue 500 */
+  --secondary-color: #1d4ed8; /* Blue 700 (for hover) */
+  --text-main: #1f2937; /* Gray 900 */
+  --bg-page: #f9fafb; /* Gray 50 */
+  --error-color: #dc2626; /* Red 600 */
+  --error-bg: #fef2f2; /* Red 50 */
+  --warning-color: #b45309; /* Amber 700 */
+  --warning-bg: #fffbe6; /* Amber 50 */
 
-.login{
-  padding: 150px 0px;
-}
-
-
-/* Define the palette variables for consistency */
-.login {
-  --color-primary: #2563eb; /* Vibrant Blue */
-  --color-primary-dark: #1d4ed8;
-  --color-accent: #f59e0b;  /* Warm Yellow */
-  --color-danger: #ef4444;  /* Soft Red */
-  --color-surface: #ffffff; /* White */
-  --color-text: #1e293b;    /* Dark Blue-Grey for text */
-  --color-text-muted: #64748b;
-
-  /* Layout */
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background-color: #f1f5f9; /* Very light cool grey/blue bg */
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  padding: 20px;
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-page);
+  font-family: system-ui, -apple-system, sans-serif;
+  padding: 1rem;
 }
 
-.title{
-  text-align: center;
-  font-weight: 800;
-  color: #111827;
-}
-
-.footer{
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 1rem;
-  color: #4b5563;
-
-}
-
-.footer a{
-  color: #4f46e5;
-  font-weight: 500;
-}
-
-/* The Card Container */
-.loginForm {
-  background-color: var(--color-surface);
+/* --- Login Card Container --- */
+.loginCard {
   width: 100%;
   max-width: 400px;
   padding: 2.5rem;
+  /* background: white; */
   border-radius: 16px;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06),
-    0 0 0 1px rgba(0,0,0, 0.02); /* Subtle border */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+/* --- Title --- */
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 2rem;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+/* --- Form Layout --- */
+.form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  position: relative;
-  overflow: hidden;
+  gap: 1.25rem; /* Increased spacing */
 }
 
-/* Decorative Top Bar (The Theme Flourish) */
-.loginForm::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 6px;
-  background: linear-gradient(90deg,
-    var(--color-primary) 0%,
-    var(--color-primary) 33%,
-    var(--color-accent) 33%,
-    var(--color-accent) 66%,
-    var(--color-danger) 66%,
-    var(--color-danger) 100%
-  );
-}
-
-/* Input Fields */
+/* --- Input Fields --- */
 .input {
-  /* width: 100%; */
-  padding: 0.875rem 1rem;
-  font-size: 1rem;
-  color: var(--color-text);
-  background-color: #f8fafc;
-  border: 2px solid #e2e8f0;
+  padding: 0.8rem 1rem;
+  border: 1px solid #e5e7eb; /* Light border */
   border-radius: 8px;
-  transition: all 0.2s ease-in-out;
-  outline: none;
-}
-
-.input::placeholder {
-  color: var(--color-text-muted);
-}
-
-/* Input Focus State - Utilizing the Yellow */
-.input:focus {
-  background-color: var(--color-surface);
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); /* Yellow Glow */
-}
-
-/* Button */
-.button {
-  margin-top: 0.5rem;
-  width: 100%;
-  padding: 0.875rem;
   font-size: 1rem;
+  color: var(--text-main);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  /* width: 100%; */
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); /* Subtle inner shadow */
+}
+
+.input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* --- Submit Button --- */
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem;
+  background-color: var(--primary-color);
+  color: white;
   font-weight: 600;
-  color: var(--color-surface);
-  background-color: var(--color-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
+  font-size: 1rem;
+  min-height: 44px; /* Ensures height consistency */
 }
 
 .button:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
-}
-
-.button:active:not(:disabled) {
-  transform: translateY(1px);
+  background-color: var(--secondary-color);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
 .button:disabled {
-  opacity: 0.7;
+  background-color: #93c5fd;
+  opacity: 0.8;
   cursor: not-allowed;
 }
 
-/* Feedback Messages */
-.error, .success {
-  padding: 0.75rem;
+/* Loading State */
+.loadingState {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- Error/Message States --- */
+.error, .unverified {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
   border-radius: 8px;
-  font-size: 0.9rem;
-  text-align: center;
-  animation: fadeIn 0.3s ease-in;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
   font-weight: 500;
+  line-height: 1.4;
 }
 
 .error {
-  background-color: #fef2f2;
-  color: var(--color-danger);
-  border: 1px solid #fee2e2;
+  background-color: var(--error-bg);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
 }
 
-.success {
-  background-color: #eff6ff;
-  color: var(--color-primary);
-  border: 1px solid #dbeafe;
+.unverified {
+  background-color: var(--warning-bg);
+  color: var(--warning-color);
+  border: 1px solid var(--warning-color);
+  flex-wrap: wrap; /* Allows text and link to wrap */
 }
 
-/* Simple Animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+.resendLink {
+  color: var(--warning-color);
+  text-decoration: underline;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  white-space: nowrap; /* Keeps the link together */
+}
+
+.resendLink:hover {
+  color: var(--error-color);
+}
+
+/* --- Footer Link --- */
+.footerLink {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #4b5563; /* Gray 600 */
+}
+
+.footerLink a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.footerLink a:hover {
+    text-decoration: underline;
+}
+
+
+/* --- Responsive Mobile Optimization --- */
+@media (max-width: 480px) {
+
+  .loginCard {
+    /* Full width on small screens, remove side padding */
+    width: 80%;
+    max-width: none;
+    /* background-color: white; */
+    padding: 4.5rem 0rem;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
 }

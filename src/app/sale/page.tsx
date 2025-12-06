@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2, AlertCircle, TrendingUp, AlertTriangle } from "lucide-react";
+import { AlertCircle, TrendingUp, AlertTriangle } from "lucide-react";
 import styles from "@/app/ui/styles/hot-sale.module.css";
+import BestSellersSkeleton from "../ui/skeletons/product_skeleton";
+import AddToCartButton from "../ui/components/buttons/add-to-cart";
 
 // Interface matching the final SQL output structure
 interface BestSellerProduct {
@@ -83,10 +85,7 @@ const BestSellersPage: React.FC = () => {
   // --- 🔄 Loading State ---
   if (loading) {
     return (
-      <div className={styles.centerMessage}>
-        <Loader2 className="animate-spin" size={40} color="#3b82f6" />
-        <p>Finding the top trending products...</p>
-      </div>
+  <BestSellersSkeleton />
     );
   }
 
@@ -116,7 +115,7 @@ const BestSellersPage: React.FC = () => {
   // --- 🏆 Main List ---
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>🏆 Top Sellers & Clearance Items 🏆</h1>
+      <h1 className={styles.title}> Trending </h1>
       <div className={styles.grid}>{products.map((product) => (
         <div key={product.product_id} className={styles.card}><Link href={`/shop/${product.product_id}`} style={{ textDecoration: 'none', color: 'inherit' }}><div className={styles.imageWrapper}>{renderTag(product)}{product.image_url ? (
         <Image
@@ -139,16 +138,7 @@ const BestSellersPage: React.FC = () => {
             </div>)}
             <div className={styles.footer}>
               <span className={styles.price}>{formatPrice(product.price)}</span>
-              <svg
-                    className={styles.Cartbutton}
-                    aria-label={`Add ${product.title} to cart`}
-                    onClick={(e) => { 
-                        e.preventDefault(); 
-                        alert(`Added ${product.title} to cart!`); 
-                    }}
-
-                     xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="currentColor" d="M17 18a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2c0-1.11.89-2 2-2M1 2h3.27l.94 2H20a1 1 0 0 1 1 1c0 .17-.05.34-.12.5l-3.58 6.47c-.34.61-1 1.03-1.75 1.03H8.1l-.9 1.63l-.03.12a.25.25 0 0 0 .25.25H19v2H7a2 2 0 0 1-2-2c0-.35.09-.68.24-.96l1.36-2.45L3 4H1zm6 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2c0-1.11.89-2 2-2m9-7l2.78-5H6.14l2.36 5z"/>
-              </svg>
+              <AddToCartButton productVariantId={product.product_id} quantity={1} />
             </div>
       </div>
       </Link>

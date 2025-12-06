@@ -1,309 +1,282 @@
+/* navbar.module.css - Fully responsive mega menu styling for e-commerce */
+/* Optimized for desktop (>1024px), tablet (769–1024px), mobile (≤768px) */
 
-/* === Base Navbar & Layout === */
 .navbar {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
-  padding: 0 2rem;
-  margin-left: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* height: 80px; */
+  /* padding: 0 5%; */
+  /* background-color: #ffffff; */
+  /* border-bottom: 1px solid #eee; */
+  z-index: 1000;
 }
 
+/* Hamburger - visible only on mobile */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #111;
+  font-size: 1.5rem;
+}
+
+/* Desktop nav list */
 .navList {
   display: flex;
   align-items: center;
   list-style: none;
   margin: 0;
-  padding: 0;
-  max-width: 1200px; /* Optional: set a max-width for your content */
-  margin: 0 auto;
+  padding: 0 15px;
+  gap: 1.5rem;
 }
 
-.nav-item {
-  /* This is crucial for positioning the mega menu */
+.navItem:not(:last-child) {
   position: relative;
+  border-bottom: 2px solid #eee;
 }
 
-/* === Links & Buttons === */
 
-/* Style both <Link> (<a>) and <button> to look consistent */
-.nav-item > a,
-.nav-item > button {
-  display: block;
-  font-size: 1rem;
-  padding: 8px 15px;
-  font-weight: 500;
+
+.link,
+.navButton {
   text-decoration: none;
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
-
-/* Reset default button styles */
-.nav-item > button {
+  color: #111;
+  font-weight: 500;
+  font-size: 1rem;
   background: none;
   border: none;
   cursor: pointer;
-  font-family: inherit; /* Ensure font matches */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
 }
 
-/* Add hover/focus states for all items */
-
-
-/* Style the button when its menu is open */
-.nav-item > button[aria-expanded="true"] {
-  color: #0070f3;
-  background-color: #f9f9f9;
+.link:hover,
+.navButton:hover {
+  color: var(--primary-blue, #0d47a1);
 }
 
-/* === Cart Icon === */
-
-/* This pushes the cart item all the way to the right */
-.nav-item.cart {
-  margin-left: auto;
-}
-
-.nav-item.cart a {
-  padding: 1rem; /* Give the icon some space */
-}
-
-/* === The Mega Menu === */
+/* ==================== DESKTOP MEGA MENU (>1024px) ==================== */
 .megaMenu {
-    padding: 20px;
-    /* left: 75%; */
-  /* Positioning */
   position: absolute;
-  /* top: 100%;
-  left: 0; */
-  z-index: 1000; /* Ensure it's on top of other content */
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+  padding: 2.5rem 3rem;
+  display: none;
+  flex-wrap: nowrap;
 
-  /* Layout */
-  /* display: flex; */
-  gap: 2rem; /* Space between columns */
-
-  /* Appearance */
-  border-top: none;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  /* padding: 1.5rem 2rem; */
-  /* width: max-content; Make the menu as wide as its content */
+  width: max-content;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
 }
 
-.main_wrapper {
-  /* Updated to a modern Blue-to-Yellow gradient */
-  background: linear-gradient(
-    135deg,
-    #0d47a1, /* Deep, rich blue */
-    #42a5f5, /* Brighter mid-point blue */
-    #ffd600  /* Vibrant, modern yellow */
-  );
-  background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
-}
-
-/* Keyframe animation remains the same, it's perfect */
-@keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.megaMenu.visible {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
 }
 
 
-/* === Mega Menu Columns & Content === */
-.mega-menu-column {
-  /* The 'flex' on .mega-menu handles the layout */
+
+.megaMenuColumn {
+  flex: 1;
+  min-width: 200px;
 }
 
-/* Style for single links in a column */
-.mega-menu-column > a {
+.megaMenuColumn h3 {
+  margin: 0 0 1.25rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #222;
-  text-decoration: none;
-  display: block;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
-}
-
-.mega-menu-column > a:hover {
-  background-color: #f4f4f4;
-}
-
-/* Style for columns with headers and lists */
-.mega-menu-column h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #555;
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #f0f0f0;
-  text-transform: uppercase;
+  color: #111;
   letter-spacing: 0.5px;
 }
 
-.mega-menu-column ul {
+.megaMenuColumn ul {
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
-.mega-menu-column li a {
-  display: block;
+.megaMenuColumn li {
+  margin-bottom: 0.9rem;
+}
+
+.megaMenuColumn a {
   text-decoration: none;
-  color: #333;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #444;
+  font-size: 0.98rem;
+  transition: all 0.25s ease;
+  display: block;
 }
 
-.mega-menu-column li a:hover {
-  background-color: #f4f4f4;
-  color: #0070f3;
+.megaMenuColumn a:hover {
+  color: var(--primary-blue, #0d47a1);
+  padding-left: 6px;
 }
 
-
-
-
-/* Nav Component Container */
-.navbar {
-    position: relative;
-    /* On mobile, only the hamburger is visible */
+/* Featured image column (3rd column in Shop) */
+.megaMenuColumn:nth-child(3) {
+  min-width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2rem;
 }
 
-/* Hamburger Menu Button */
-.hamburger {
-    display: none; /* Hidden by default on desktop */
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    color: var(--text-color); /* Replace with your actual color variable */
+/* Mini menu for Account */
+.miniMenu {
+  min-width: 280px !important;
+  max-width: 320px;
+  left: auto !important;
+  right: 0;
+  transform: none !important;
+  padding: 1.5rem 0 !important;
+  gap: 0 !important;
 }
 
-/* Navigation List (Desktop/Mobile Styling) */
-/* .navList {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    align-items: center;
-} */
+.miniMenu .megaMenuColumn ul {
+  padding: 0 2rem;
+}
 
-/* Navigation Items (Desktop/Mobile Styling) */
-/* .navItem {
-    position: relative;
-    padding: 0 15px;
-} */
-
-/* --- Mobile View Media Query --- */
-@media (max-width: 875px) {
-
-      .navbar {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-        Arial, sans-serif;
-      padding: 0;
-      margin-left: 0;
-    }
-
-
-
-  /* If your nav content needs padding */
+/* ==================== TABLET (769px – 1024px) ==================== */
+@media (max-width: 1024px) {
   .navList {
-    margin-top: 0; /* ensure list isn't pushed down */
+    gap: 2rem;
   }
 
-    /* Show the hamburger menu */
-    .hamburger {
-        display: block;
-    }
+  .megaMenu {
+    /* min-width: 680px;
+    max-width: 860px; */
+    padding: 2rem 2.5rem;
+    gap: 3.5rem;
+  }
 
-    /* The main list is hidden by default */
-    .navList {
-        position: absolute;
-        top: 100%; /* Position below the header/hamburger */
-        right: 0;
-        width: 300px; /* Adjust width as needed */
-        max-width: 90vw;
-        flex-direction: column;
-        background-color: var(--background-glass); /* Your background color */
-        border: 1px solid var(--border-color);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        transform: translateX(100%); /* Start off-screen */
-        transition: transform 0.3s ease-in-out;
-        opacity: 0;
-        pointer-events: none;
-        padding: 10px 0;
-        align-items: stretch; /* Stretch items to fill the width */
-    }
+  .navItem:nth-child(2) .megaMenu {
+    /* min-width: 780px; */
+    gap: 4rem;
+  }
 
-    /* When the mobile menu is open */
-    .navList.open {
-      transform: translateX(0);
-      padding: 20px;
-      opacity: 1;
-      pointer-events: auto;
-      border-radius: 27px;
-      margin-top: 19px;
-    }
+  .megaMenuColumn h3 {
+    font-size: 1.05rem;
+  }
 
-    .navList.open {
-      /* Updated to a modern Blue-to-Yellow gradient */
-      background: linear-gradient(
-        135deg,
-        #0d47a1, /* Deep, rich blue */
-        #42a5f5, /* Brighter mid-point blue */
-        #ffd600  /* Vibrant, modern yellow */
-      );
-      background-size: 400% 400%;
-      animation: gradientAnimation 15s ease infinite;
-    }
-    @keyframes gradientAnimation {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-
-    .navItem {
-        padding: 0; /* Remove horizontal padding from list item */
-        width: 100%;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separator */
-    }
-
-    .navItem:last-child {
-        border-bottom: none;
-    }
-
-    /* Style for buttons and links inside the mobile menu */
-    .navItem > a,
-    .navItem > button {
-        display: block;
-        padding: 10px 20px; /* Use padding to create clickable area */
-        width: 100%;
-        text-align: left;
-        background: none;
-        border: none;
-    }
-
-    /* Ensure dropdowns take full width when open in mobile menu */
-    .megaMenu {
-        position: static;
-        width: 75%;
-        box-shadow: none;
-        border: none;
-        padding-left: 20px; /* Indent sub-menus */
-    }
-
-    .megaMenuColumn {
-        width: 100% !important;
-        padding: 5px 0 !important;
-    }
-
-    /* Hide the Cart button within the Nav, as it's now in the Header */
-    .cart {
-        display: none;
-    }
+  .megaMenuColumn a {
+    font-size: 0.95rem;
+  }
 }
 
-.Link{
-  border-bottom: 3px solid black;
+/* ==================== MOBILE (≤768px) ==================== */
+@media (max-width: 800px) {
+  .navbar {
+    height: 70px;
+    padding: 0 5%;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .navList {
+    border: 2px solid;
+    gap: 10px;
+    border-radius: 20px;
+    position: fixed;
+    top: 100px;
+    right: 0;
+    width: 50vw;
+    height: calc(90vh - 70px);
+    background: #ffffff;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 36px;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.77, 0, 0.175, 1);
+    /* overflow-y: auto; */
+    z-index: 999;
+  }
+
+  .navList.open {
+    transform: translateX(0);
+  }
+
+  .mobileOnly {
+    display: block;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .link,
+  .navButton {
+    /* width: 100%; */
+    justify-content: space-between;
+    padding: 1.1rem 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  /* Mega menu becomes accordion on mobile */
+  .megaMenu {
+    position: static;
+    transform: none;
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 1.5rem 5%;
+    margin: 0.5rem 0 1.5rem;
+    display: none;
+    flex-direction: column;
+    gap: 2rem;
+    /* min-width: auto; */
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+  }
+
+  .megaMenu.visible {
+    display: flex;
+  }
+
+  .megaMenuColumn {
+    width: 100%;
+  }
+
+  .megaMenuColumn h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .megaMenuColumn a {
+    font-size: 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .miniMenu {
+    background: transparent;
+    padding: 0 !important;
+    margin: 0;
+  }
+
+  .miniMenu .megaMenuColumn ul {
+    padding: 0;
+  }
+
+  /* Featured image in mobile */
+  .megaMenuColumn:nth-child(3) img {
+    border-radius: 12px;
+    max-width: 100%;
+    height: auto;
+  }
 }

@@ -62,127 +62,176 @@
 .cartButton:not(:empty) .cartCount {
   transform: scale(1.1);
 }
+/* cart_button.module.css */
 
-/* === Mini-Cart Panel === */
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.cartIcon {
+  margin-right: 0.5rem;
+}
+
+.cartCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #dc3545;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.bump {
+  animation: bump 0.3s ease-out;
+}
+
+@keyframes bump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* Mini cart drawer */
 .miniCart {
-  /* Positioning */
-  position: fixed; /* Fixed to the viewport */
+  position: fixed;
   top: 0;
-  right: 0;
-  z-index: 1000; /* Sits on top of everything */
-
-  /* Sizing */
-  height: 100vh; /* Full viewport height */
+  right: -400px;
   width: 350px;
-  max-width: 90vw; /* Good for small mobile */
-
-  /* Appearance */
-  background-color: #ffffff;
-  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
-
-  /* Layout */
+  max-width: 90%;
+  height: 100%;
+  background: #fff;
+  box-shadow: -3px 0 15px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-
-  /* Slide-out Animation */
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  visibility: hidden;
 }
 
-/* The 'open' state */
 .miniCart.open {
-  transform: translateX(0);
-  visibility: visible;
+  right: 0;
 }
 
-/* === Mini-Cart Sections === */
 .miniCartHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid #eaeaea;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
-.miniCartHeader strong {
-  font-size: 1.25rem;
+.closeButton {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .miniCartBody {
-  flex-grow: 1; /* Takes up all available space */
-  padding: 1.25rem;
-  overflow-y: auto; /* Adds scroll if content is too long */
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.emptyText {
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.itemsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.itemTitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.itemControls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.quantityButton {
+  background-color: #f1f1f1;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.quantity {
+  width: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.removeButton {
+  background-color: transparent;
+  border: none;
+  color: #dc3545;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
 }
 
 .miniCartFooter {
-  padding: 1.25rem;
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid #e5e5e5;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-}
-
-/* === Mini-Cart Content === */
-.emptyText,
-.itemsText {
-  text-align: center;
-  color: #555;
-  margin-top: 2rem;
-  font-size: 1rem;
-}
-
-/* === Buttons === */
-.closeButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  line-height: 1;
-  color: #777;
-  padding: 4px;
-  border-radius: 50%;
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
-
-.closeButton:hover {
-  color: #000;
-  background-color: #f4f4f4;
+  gap: 0.5rem;
 }
 
 .viewCartButton,
 .checkoutButton {
-  display: block;
-  width: 100%;
-  padding: 0.85rem 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: center;
-  border: 1px solid transparent;
+  padding: 0.5rem;
   border-radius: 6px;
+  border: none;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  width: 100%;
+  transition: background 0.2s ease;
 }
 
-/* Primary Button */
-.checkoutButton {
-  background-color: #000;
-  color: #fff;
-  border-color: #000;
-}
-
-.checkoutButton:hover {
-  background-color: #333;
-}
-
-/* Secondary Button */
 .viewCartButton {
-  background-color: #fff;
-  color: #000;
-  border-color: #ccc;
+  background-color: #f1f1f1;
+  color: #333;
 }
 
 .viewCartButton:hover {
-  border-color: #000;
-  background-color: #f9f9f9;
+  background-color: #e0e0e0;
+}
+
+.checkoutButton {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.checkoutButton:hover {
+  background-color: #0b5ed7;
 }

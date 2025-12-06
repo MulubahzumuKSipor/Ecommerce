@@ -1,4 +1,4 @@
-/* --- Variables for Theming --- */
+/* --- Variables for Theming (Consistent with Register/Login) --- */
 .container {
   --primary-color: #3b82f6; /* Blue 500 */
   --secondary-color: #1d4ed8; /* Blue 700 (for hover) */
@@ -19,13 +19,12 @@
   padding: 1rem;
 }
 
-/* --- Registration Card Container --- */
-.registerCard {
-  margin: 25%;
+/* --- Card Container --- */
+.resendCard {
   /* width: 100%; */
-  max-width: 450px; /* Slightly wider card for more inputs */
-  padding: 0.8rem 2.5rem;
-  /* background: white; */
+  max-width: 400px;
+  padding: 2.5rem;
+  background: white;
   border-radius: 16px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
@@ -33,12 +32,24 @@
 
 /* --- Title --- */
 .title {
-  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem; /* Smaller title for multi-element line */
   font-weight: 800;
   color: var(--text-main);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   text-align: center;
   letter-spacing: -0.02em;
+}
+
+/* --- Instruction Text --- */
+.instruction {
+    text-align: center;
+    color: #4b5563; /* Gray 600 */
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 /* --- Form Layout --- */
@@ -48,7 +59,7 @@
   gap: 1rem;
 }
 
-/* --- Input Fields --- */
+/* --- Input Fields (Same as other forms) --- */
 .input {
   padding: 0.8rem 1rem;
   border: 1px solid #e5e7eb;
@@ -81,7 +92,6 @@
   transition: background-color 0.2s, transform 0.1s;
   font-size: 1rem;
   min-height: 44px;
-  margin-top: 0.5rem; /* Little extra spacing above the button */
 }
 
 .button:hover:not(:disabled) {
@@ -159,7 +169,7 @@
 /* --- Responsive Mobile Optimization --- */
 @media (max-width: 480px) {
 
-  .registerCard {
+  .resendCard {
     /* Full width on small screens, remove side padding */
     width: 100%;
     max-width: none;
@@ -169,11 +179,11 @@
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     margin-bottom: 1rem;
   }
 
-  .message, .error {
-      font-size: 0.875rem;
+  .instruction {
+      font-size: 0.9rem;
   }
 }

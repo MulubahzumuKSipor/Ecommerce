@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Loader2, AlertCircle } from "lucide-react";
 import styles from "@/app/ui/styles/arrivals.module.css"; 
+import AddToCartButton from "../buttons/add-to-cart";
 
 interface NewArrivalProduct {
     product_id: number;
@@ -30,7 +31,7 @@ interface NewArrivalProduct {
 
 // Define the component's props
 interface NewArrivalsListProps {
-    limit: number; // REQUIRED prop to specify how many items to fetch
+    limit?: number; // OPTIONAL prop to specify how many items to fetch
     title?: string; // Optional title override
 }
 
@@ -105,7 +106,7 @@ const NewArrivalsList: React.FC<NewArrivalsListProps> = ({ limit, title = "✨ N
 
     // --- 🚀 Main Arrivals List ---
     return (
-        <div className={styles.container}>
+        <div className={ limit ? styles.limitcontainer : styles.container}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
                 <h2 className={styles.heading} style={{ marginBottom: 0 }}>
                     {title}
@@ -153,7 +154,7 @@ const NewArrivalsList: React.FC<NewArrivalsListProps> = ({ limit, title = "✨ N
                                             className={styles.button}
                                             onClick={(e) => { e.preventDefault(); alert(`Added ${product.product_id} to cart!`); }}
                                         >
-                                            <ShoppingCart size={20} />
+                                            <AddToCartButton productVariantId={product.product_id} quantity={1} />
                                         </button>
                                     </div>
                                 </div>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "../styles/top-rated.module.css";
 import { ShoppingCart } from "lucide-react";
+import AddToCartButton from "./buttons/add-to-cart";
 
 // 1. Define the Props interface
 type Props = {
@@ -143,7 +144,7 @@ export default function TopRatedProducts({ limit }: Props) {
                     <span className={styles.price}>
                       ${Number(product.price).toFixed(2)}
                     </span>
-                    <ShoppingCart size={20} className={styles.cart} />
+                    <AddToCartButton productVariantId={product.product_id} quantity={1} />
                   </div>
                 </div>
               </Link>

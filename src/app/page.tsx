@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <Landing />
       <CategoryList/>
-      <ProductList limit={4} />
+      <ProductList limit={5} />
       <TopRatedProducts limit={5} />
       <NewArrivalsList limit={8} title="🔥 Top 8 Latest Items"/>
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "@/app/ui/styles/category.module.css";
 import { ShoppingCart, Loader2, AlertCircle } from "lucide-react";
+import AddToCartButton from "./buttons/add-to-cart";
 
 // ---------------------------------------------------------------
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -110,7 +111,7 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={limit ? styles.limitcontainer : styles.container} >
       <div
         style={{
           display: "flex",
@@ -180,7 +181,7 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
                     <span className={styles.price}>
                       {formatPrice(product.price)}
                     </span>
-                    <button
+                    <div
                       className={styles.button}
                       aria-label="Add to cart"
                       onClick={(e) => {
@@ -189,8 +190,8 @@ const ProductList: React.FC<ProductListProps> = ({ limit }) => {
                         console.log("Added to cart:", product.title);
                       }}
                     >
-                      <ShoppingCart size={18} />
-                    </button>
+                      <AddToCartButton productVariantId={product.product_id} quantity={1} />
+                    </div>
                   </div>
                 </div>
               </Link>

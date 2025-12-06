@@ -8,6 +8,12 @@
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+.limitcontainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0px 20px 50px 20px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
 
 
 .title {
@@ -22,7 +28,7 @@
   margin: 0 30px;
   display: grid;
   /* Creates columns automatically that are at least 280px wide */
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
 }
 
