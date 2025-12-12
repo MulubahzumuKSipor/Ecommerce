@@ -5,18 +5,17 @@ import type { User } from "@supabase/supabase-js";
 
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: { userId: string } } // still plain object for your code
 ) {
   try {
     const authResult = await authMiddleware(req);
 
-    // If middleware returned an error response, return it
     if (authResult instanceof NextResponse) {
       return authResult;
     }
 
     const authUser: User = authResult;
-    const { id: userId } = await context.params;
+    const { userId } = context.params; // no await
 
     if (!userId) {
       return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
@@ -28,23 +27,15 @@ export async function GET(
 
     const { rows } = await pool.query(
       `
-      SELECT username, email, phone, role, subscribed
-      FROM users
+      SELECT * FROM orders
       WHERE user_id = $1
     `,
       [userId]
     );
 
-    if (!rows[0]) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ user: rows[0] }, { status: 200 });
+    return NextResponse.json({ orders: rows || [] }, { status: 200 });
   } catch (err) {
-    console.error("[GET /api/users/[id]] error:", err);
-    return NextResponse.json(
-      { error: "Failed to fetch user data" },
-      { status: 500 }
-    );
+    console.error("[GET /api/orders/[userId]] error:", err);
+    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
   }
 }
