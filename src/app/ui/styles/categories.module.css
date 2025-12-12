@@ -1,147 +1,12 @@
-/* categories.module.css */
-
+/* --- CONTAINERS --- */
 .container {
-  padding: 20px;
+  padding: 2rem 7rem;
   max-width: 1200px;
-  margin: 0 auto;
-}
-
-.title {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.right{
-  position: absolute;
-  right: 0;
-}
-
-.left{
-  position: absolute;
-  left: 0;
-  top: 100%;
+  /* margin: 0 auto; */
 }
 
 
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 20px;
-  transition: transform 0.2s;
-  background: white;
-  text-decoration: none;
-  color: inherit;
-  /* min-width: 150px; */
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-/* --- CAROUSEL WRAPPER & ARROWS --- */
-
-.carouselWrapper {
-  position: relative;
-  width: 100%;
-}
-
-.arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-
-  /* HIDDEN BY DEFAULT */
-  display: none;
-}
-
-.arrow:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-  transform: translateY(-50%) scale(1.05);
-}
-
-.leftArrow {
-  left: 20px;
-}
-
-.rightArrow {
-  right: 20px;
-}
-
-/* -------------------------------------------
-   MEDIA QUERIES (850px breakpoint)
-   ------------------------------------------- */
-
-/* Desktop/Tablet (HIDE Arrows, Show Grid) */
-@media (min-width: 851px) {
-  /* Ensure arrows are hidden on large screens */
-  .arrow {
-    display: none;
-  }
-}
-
-/* Mobile (SHOW Arrows & Enable Swiping Carousel) */
-@media (max-width: 850px) {
-  /* 1. SHOW arrows on mobile */
-  .arrow {
-    display: flex; /* REVERSED: SHOW arrows on mobile */
-  }
-
-  /* 2. Overrides for grid container (Carousel Mode) */
-  .grid {
-    display: flex;              /* Switch from Grid to Flexbox */
-    overflow-x: auto;           /* Enable horizontal scrolling */
-    scroll-snap-type: x mandatory; /* Enable snapping */
-
-    padding: 0 1rem;            /* Reset padding for screen edges */
-    gap: 1rem;
-    padding-bottom: 1rem;
-
-    -webkit-overflow-scrolling: touch;
-
-    /* Hide scrollbar */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  /* Hide scrollbar for Webkit browsers */
-  .grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 3. Overrides for card items */
-  .card {
-    flex: 0 0 auto;           /* Prevent shrinking/growing */
-    width: 160px;             /* Fixed width for snap effect/peeking */
-    min-width: 160px;
-    scroll-snap-align: start; /* Snap to the left edge of the card */
-  }
-}
-
-
-/* --- CONTAINER & LAYOUT --- */
-.container {
-  padding: 2rem 1rem; /* Added horizontal padding for mobile edge safety */
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
+/* --- HEADINGS --- */
 .title {
   font-size: 0.8rem;
   font-weight: 700;
@@ -149,62 +14,47 @@
   color: #1f2937;
 }
 
-/* --- THE GRID / CAROUSEL --- */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2rem;
-  padding-bottom: 1rem; /* Space for hover shadows or scrollbar */
+.heading {
+  color: #1f2937;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
-/* --- MOBILE CAROUSEL LOGIC (Max Width 768px) --- */
-@media (max-width: 849px) {
-  .grid {
-    display: flex;             /* Turn grid into a row */
-    overflow-x: auto;          /* Enable horizontal scrolling */
-    gap: 1rem;                 /* Gap between slides */
+/* --- POSITIONING HELPERS --- */
+.right {
+  position: absolute;
+  right: 0;
+}
 
-    /* Scroll Snap Magic */
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch; /* Smooth momentum scroll on iOS */
-
-    /* Hide Scrollbar (Optional - purely aesthetic) */
-    scrollbar-width: none;     /* Firefox */
-    -ms-overflow-style: none;  /* IE */
-  }
-
-  .grid::-webkit-scrollbar {
-    display: none;             /* Chrome/Safari */
-  }
-
-  .card {
-    /* flex: 0 0 85%
-      This is crucial. It forces the card to be 85% of the screen width.
-      The remaining 15% shows a "peek" of the next card, encouraging swipe.
-    */
-    flex: 0 0 85%;
-    max-width: 10px;              /* Prevents flexbox overflow bugs */
-    scroll-snap-align: center; /* Snap the card to the center of the screen */
-  }
+.left {
+  position: absolute;
+  left: 0;
+  top: 100%;
 }
 
 /* --- CARD STYLING --- */
 .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   overflow: hidden;
+  padding: 20px;
   background: white;
-  /* display: flex; */
-  /* flex-direction: column; */
+  text-decoration: none;
+  color: inherit;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  /* height: 100%;  */
 }
 
-/* Only hover effect on Desktop (hover doesn't exist on touch) */
+/* Hover effect only on desktop */
 @media (min-width: 850px) {
   .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -212,7 +62,7 @@
 .imageWrapper {
   position: relative;
   width: 100%;
-  height: 220px; /* Fixed height container */
+  height: 220px;
   background-color: #f9fafb;
 }
 
@@ -238,7 +88,7 @@
 /* --- CONTENT AREA --- */
 .content {
   padding: 1rem;
-  flex: 1; /* Pushes footer to bottom */
+  flex: 1; /* Push footer to bottom */
   display: flex;
   flex-direction: column;
 }
@@ -257,8 +107,6 @@
   color: #111827;
   margin: 0 0 0.5rem 0;
   line-height: 1.3;
-
-  /* Truncate title to 1 line */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -269,8 +117,6 @@
   color: #6b7280;
   margin-bottom: 1rem;
   line-height: 1.5;
-
-  /* Truncate description to 2 lines */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -279,7 +125,7 @@
 
 /* --- FOOTER (Price & Button) --- */
 .footer {
-  margin-top: auto; /* Pushes this section to the bottom of card */
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -312,6 +158,104 @@
   color: white;
 }
 
+/* --- GRID / CAROUSEL --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  padding-bottom: 1rem;
+}
+
+/* Mobile carousel overrides */
+@media (max-width: 850px) {
+  .grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+  }
+
+  .container {
+    padding-top: 20px;
+    padding: 0;
+    margin: 0 30px;
+  }
+}
+
+.carouselWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.arrowButton {
+  display: none; /* hidden by default */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrowButton:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.left {
+  left: 8px;
+}
+
+.right {
+  right: 8px;
+}
+
+/* Show buttons only on mobile */
+@media (max-width: 850px) {
+  .arrowButton {
+    display: flex;
+  }
+
+  .grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    flex: 0 0 auto;
+    width: 160px; /* card width */
+    scroll-snap-align: start;
+  }
+}
+
+
 /* --- UTILITIES --- */
 .centerMessage {
   display: flex;
@@ -326,75 +270,4 @@
 .errorText {
   margin-top: 1rem;
   color: #ef4444;
-}
-
-@media (max-width: 850px){
-  .container{
-    padding-top: 20px;
-    margin: 0px 30px;
-  }
-}
-
-
-
-/* Floating infinite animation */
-@keyframes float {
-  0% {
-    transform: translateY(-50%) translateX(0);
-  }
-  50% {
-    transform: translateY(-55%) translateX(0);
-  }
-  100% {
-    transform: translateY(-50%) translateX(0);
-  }
-}
-
-.arrowButton {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-
-  width: 40px;
-  height: 40px;
-
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(6px);
-
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-
-  animation: float 2.8s ease-in-out infinite;
-  transition: background 0.2s ease, transform 0.2s ease box-shadow 0.2s ease;
-}
-
-/* Hover effect to enhance the float */
-.arrowButton:hover {
-  background: white;
-  animation: none;
-
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
-}
-
-/* Click effect */
-.arrowButton:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-
-
-/* Larger on desktop */
-@media (min-width: 851px) {
-  .arrowButton {
-    display: none;
-  }
 }

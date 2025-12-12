@@ -1,4 +1,5 @@
 'use client'
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, CheckCircle, XCircle } from 'lucide-react'
@@ -10,6 +11,8 @@ interface FormState {
   email: string
   phone: string
   password: string
+  user_type: 'user' | 'buyer' | 'seller' | 'exclusive buyer' | 'exclusive seller'
+  subscribed: boolean
 }
 
 export default function RegisterPage() {
@@ -19,13 +22,22 @@ export default function RegisterPage() {
     email: '',
     phone: '',
     password: '',
+    user_type: 'user',
+    subscribed: false,
   })
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const target = e.target
+    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+      setForm({ ...form, [target.name]: target.checked })
+    } else {
+      setForm({ ...form, [target.name]: target.value })
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,18 +54,23 @@ export default function RegisterPage() {
       })
 
       const data = await res.json()
-
       if (!res.ok) throw new Error(data.error || 'Registration failed')
 
-      // Show success message and clear form
-      setMessage('Registration successful! Check your email to verify your account.')
-      setForm({ username: '', email: '', phone: '', password: '' })
+      setMessage(
+        'Registration successful! Check your email to verify your account.'
+      )
+      setForm({
+        username: '',
+        email: '',
+        phone: '',
+        password: '',
+        user_type: 'user',
+        subscribed: false,
+      })
 
-      // Optional: redirect after a few seconds
       setTimeout(() => {
         router.push('/auth/resend')
       }, 4000)
-
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     } finally {
@@ -108,7 +125,6 @@ export default function RegisterPage() {
             value={form.phone}
             onChange={handleChange}
             className={styles.input}
-            // phone is marked as required in the user's JSX, but optional in placeholder - removed 'required' here for better UX
           />
           <input
             type="password"
@@ -120,6 +136,32 @@ export default function RegisterPage() {
             className={styles.input}
             autoComplete="new-password"
           />
+
+          {/* --- User Type Dropdown --- */}
+          <select
+            name="user_type"
+            value={form.user_type}
+            onChange={handleChange}
+            className={styles.input}
+          >
+            <option value="user">User</option>
+            <legend>** Only user option is available for now</legend>
+            {/* <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+            <option value="exclusive buyer">Exclusive Buyer</option>
+            <option value="exclusive seller">Exclusive Seller</option> */}
+          </select>
+
+          {/* --- Subscribe Checkbox --- */}
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              name="subscribed"
+              checked={form.subscribed}
+              onChange={handleChange}
+            />
+            Subscribe to newsletters & updates
+          </label>
 
           <button type="submit" disabled={loading} className={styles.button}>
             {loading ? (
@@ -135,7 +177,9 @@ export default function RegisterPage() {
 
         {/* Footer Link */}
         <div className={styles.footerLink}>
-            <p>Already have an account? <Link href="/auth/login">Login here</Link></p>
+          <p>
+            Already have an account? <Link href="/auth/login">Login here</Link>
+          </p>
         </div>
       </div>
     </div>

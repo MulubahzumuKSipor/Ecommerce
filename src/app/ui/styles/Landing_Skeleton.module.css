@@ -6,7 +6,7 @@
 
 .skeletonContainer {
   /* Ensure the container has a minimum height so the skeleton is visible */
-  min-height: 80vh; 
+  min-height: 50vh;
 }
 
 /* The Shimmer animation effect */
@@ -34,7 +34,7 @@
   height: 50px;
   width: 100%;
   max-width: 600px;
-  margin: 20px auto; /* Centers it like a search bar often is */
+  /* margin: 20px auto; Centers it like a search bar often is */
 }
 
 .heroImagePlaceholder {
@@ -46,26 +46,26 @@
 .heroTitlePlaceholder {
   height: 40px;
   width: 80%;
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 
 .heroDescriptionPlaceholder {
   height: 20px;
   width: 90%;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
 }
 
 .heroButtonPlaceholder {
   height: 45px;
   width: 150px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .socialIconPlaceholder {
   width: 30px;
   height: 30px;
   border-radius: 50%; /* Makes them look like the original circular icons */
-  margin: 0 10px;
+  /* margin: 0 10px; */
 }
 
 /* Ensure the layout styles are consistent for both the main component and the skeleton */

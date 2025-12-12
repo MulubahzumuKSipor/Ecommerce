@@ -1,0 +1,63 @@
+.pageWrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 8rem 2rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.heroTitle {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.categorySection {
+  margin-bottom: 2rem;
+}
+
+.categoryTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #0070f3;
+}
+
+.accordionContainer {
+  border-top: 1px solid #ddd;
+}
+
+.accordionItem {
+  border-bottom: 1px solid #ddd;
+}
+
+.accordionButton {
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  background: #f9f9f9;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.accordionButton:hover {
+  background: #f1f1f1;
+}
+
+.accordionIcon {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.accordionContent {
+  padding: 0.75rem 1rem;
+  background: #fff;
+  color: #333;
+  font-size: 0.95rem;
+}

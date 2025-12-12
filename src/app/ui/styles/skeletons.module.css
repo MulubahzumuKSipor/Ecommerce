@@ -22,7 +22,7 @@
 .list-container-skeleton {
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   padding: 20px;
 }
 
@@ -37,7 +37,7 @@
 .product-list-skeleton {
   list-style: none;
   padding: 0;
-  margin: 0;
+  /* margin: 0; */
   display: grid;
   /* Now showing 3 cards per row */
   grid-template-columns: repeat(3, 1fr);

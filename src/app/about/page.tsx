@@ -11,11 +11,20 @@ export default function AboutPage() {
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <h1>Connecting You to Quality Products</h1>
-          <p>We bring the best brands and local artisans straight to your doorstep.</p>
+          <p>We bring the best brands and local vendors straight to your doorstep.</p>
           <Link href="/shop" className={styles.ctaButton}>Explore Our Shop</Link>
         </div>
         <div className={styles.heroImage}>
-          {/* <Image src="/images/hero-about.jpg" alt="About Hero" fill priority className={styles.image} /> */}
+          <video
+            src="/hero_vid.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            poster="/landing_about.jpg"
+            className={styles.image}
+          ></video>
         </div>
       </section>
 

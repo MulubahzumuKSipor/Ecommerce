@@ -1,157 +1,100 @@
+// app/components/TopRatedProductsList.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import styles from "../styles/top-rated.module.css";
-import { ShoppingCart } from "lucide-react";
-import AddToCartButton from "./buttons/add-to-cart";
+import { useEffect, useState, useCallback } from "react";
+import { AlertCircle } from "lucide-react";
+import styles from "@/app/ui/styles/product.module.css";
+import ProductList from "../components/products";
+import ProductSkeleton from "@/app/ui/skeletons/few_product_skeleton";
 
-// 1. Define the Props interface
-type Props = {
-  limit?: number; // Optional: if undefined, shows all
-};
+interface Product {
+  product_id?: number;
+  title?: string;
+  brand?: string | null;
+  price?: number | string | null;
+  compare_at_price?: number | string | null;
+  images?: { image_url?: string | null }[] | null;
+  rating?: number | null;
+  stock_quantity?: number | null;
+  category_name?: string | null;
+}
 
-type ProductRow = {
-  product_id: number;
-  title: string;
-  description: string;
-  brand: string;
-  rating: number; 
-  variant_id: number;
-  sku: string;
-  price: string | number;
-  compare_at_price: string | number | null;
-  stock_quantity: number;
-  category_name: string;
-  images: {
-    image_url: string;
-    thumbnail_url: string;
-    display_order: number;
-  }[];
-};
+interface TopRatedProductsListProps {
+  limit?: number;
+  title?: string;
+}
 
-// 2. Accept props in the component
-export default function TopRatedProducts({ limit }: Props) {
-  const [products, setProducts] = useState<ProductRow[]>([]);
+const TopRatedProductsList: React.FC<TopRatedProductsListProps> = ({ limit, title = "⭐ Top Rated Products ⭐" }) => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchTopRated = useCallback(async () => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const res = await fetch(`/api/products?limit=${limit ?? 20}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data: Product[] = await res.json();
+      const topRated = data.filter((p) => (p.rating ?? 0) > 4.5); // filter ratings above 4.5
+      setProducts(topRated);
+    } catch (err) {
+      console.error(err);
+      setError("Could not load top-rated products. Please check the server.");
+    } finally {
+      setLoading(false);
+    }
+  }, [limit]);
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        
-        // Construct the URL with the limit parameter
-        const url = new URL("/api/products", window.location.origin);
-        if (limit) {
-            url.searchParams.append("limit", limit.toString());
-        }
+    fetchTopRated();
+  }, [fetchTopRated]);
 
-        // Fetch products, now expecting the API to handle the filtering (rating >= 4.0) and limiting
-        const res = await fetch(url.toString());
-        
-        if (!res.ok) throw new Error("Failed to fetch top-rated products");
+  if (loading && products.length === 0) return <ProductSkeleton />;
 
-        const data = await res.json();
-
-        // The API now returns the final, filtered, and limited selection
-        setProducts(Array.isArray(data) ? data : []);
-
-      } catch (err) {
-        setError("Could not load top-rated products.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [limit]); // Re-run if limit changes
-
-  // Helper to render stars (Unchanged)
-  const renderStars = (rating: number) => {
-    const r = Math.max(0, Math.min(5, Number(rating) || 0));
-    const fullStars = Math.floor(r);
-    const hasHalf = r % 1 >= 0.5;
-    
+  if (error) {
     return (
-      <span className={styles.starContainer} aria-label={`Rating: ${r} out of 5`}>
-        {[...Array(5)].map((_, i) => (
-          <span key={i} className={i < fullStars ? styles.starFilled : i === fullStars && hasHalf ? styles.starHalf : styles.starEmpty}>
-            ★
-          </span>
-        ))}
-        <span className={styles.ratingNumber}>({r.toFixed(1)})</span>
-      </span>
+      <div className={styles.centerMessage}>
+        <AlertCircle size={40} color="#ef4444" />
+        <p className={styles.errorText}>{error}</p>
+      </div>
     );
-  };
+  }
 
-  if (loading) return <div className={styles.loader}>Finding top picks...</div>;
-  if (error) return <div className={styles.error}>{error}</div>;
+  if (products.length === 0) {
+    return (
+      <div className={styles.centerMessage} style={{ marginTop: "2rem" }}>
+        <h2>No top-rated products yet!</h2>
+      </div>
+    );
+  }
 
   return (
-    <section className={styles.container}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 className={styles.heading} style={{ marginBottom: 0 }}>
-          {limit ? "Top Picks For You" : "All Top Rated Products"}
-        </h2>
-        
-        {/* Optional: Show a "View All" link if we are limiting the view */}
+    <div className={limit ? styles.limitContainer : styles.container}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h2 className={styles.heading}>{title}</h2>
         {limit && (
-            <Link href="/bestsellers" style={{ fontSize: '14px', color: '#3b82f6', textDecoration: 'none' }}>
-                View All &rarr;
-            </Link>
+          <a href="/top-rated" style={{ fontSize: "14px", color: "#3b82f6", textDecoration: "none" }}>
+            View All &rarr;
+          </a>
         )}
       </div>
-      
-      {products.length === 0 ? (
-        <p>No top-rated products found.</p>
-      ) : (
-        <div className={styles.grid}>
-          {products.map((product) => {
-            const mainImage = product.images?.[0]?.image_url;
-            return (
-              <Link 
-                key={`${product.product_id}-${product.variant_id}`} 
-                href={`/shop/${product.product_id}`}
-                className={styles.card}
-              >
-                <div className={styles.imageWrapper}>
-                  {mainImage ? (
-                    <Image
-                      src={mainImage}
-                      alt={product.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      style={{ objectFit: "cover" }}
-                    />
-                  ) : (
-                    <div className={styles.placeholder}>No Image</div>
-                  )}
-                  <div className={styles.badge}>Top Rated</div>
-                </div>
 
-                <div className={styles.details}>
-                  <div className={styles.meta}>
-                    <span className={styles.category}>{product.category_name || product.brand}</span>
-                  </div>
-                  <h3 className={styles.title}>{product.title}</h3>
-                  <div className={styles.ratingRow}>
-                    {renderStars(product.rating)}
-                  </div>
-                  <div className={styles.priceRow}>
-                    <span className={styles.price}>
-                      ${Number(product.price).toFixed(2)}
-                    </span>
-                    <AddToCartButton productVariantId={product.product_id} quantity={1} />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      )}
-    </section>
+      <div className={styles.grid}>
+        {products.map((product) => (
+          <ProductList
+            key={product.product_id ?? Math.random()}
+            product={{
+              ...product,
+              isTopRated: true, // highlight top-rated
+            }}
+          />
+        ))}
+      </div>
+    </div>
   );
-}
+};
+
+export default TopRatedProductsList;

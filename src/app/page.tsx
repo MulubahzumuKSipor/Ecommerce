@@ -1,5 +1,5 @@
 import Landing from "./ui/components/landing_page";
-import ProductList from "@/app/ui/components/products";
+import ProductList from "@/app/ui/components/product_list";
 import CategoryList from "./ui/components/shared/categoriesList";
 import NewArrivalsList from "./ui/components/shared/newArrivals";
 import TopRatedProducts from "./ui/components/toprated";

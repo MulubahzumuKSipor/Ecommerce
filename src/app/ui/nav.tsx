@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient, User } from '@supabase/supabase-js'
+import type { User } from '@supabase/supabase-js'
 import CartButton from './components/buttons/cart'
 import styles from '../ui/styles/navbar.module.css'
 import { supabase } from '@/lib/client'
@@ -31,7 +31,11 @@ export default function Nav() {
 
   // Handle Logout
   const handleLogout = async () => {
-    await supabase.auth.signOut()
+    try {
+      await supabase.auth.signOut()
+    } catch (err) {
+      console.error('[Nav] signOut error', err)
+    }
     setSupabaseUser(null)
     setDbUser(null)
     setOpenMenu(null)
@@ -41,29 +45,81 @@ export default function Nav() {
 
   // Supabase Auth Listeners
   useEffect(() => {
+    let mounted = true
+
     supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return
       if (data.session?.user) setSupabaseUser(data.session.user)
+    }).catch(err => {
+      console.debug('[Nav] getSession error', err)
     })
+
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return
       setSupabaseUser(session?.user ?? null)
     })
-    return () => listener.subscription.unsubscribe()
+
+    return () => {
+      mounted = false
+      // safe unsubscribe
+      listener.subscription.unsubscribe()
+    }
   }, [])
 
-  // Fetch DB User
+  // Fetch DB User — REPLACED fetch with Authorization header + credentials include
   useEffect(() => {
+    const controller = new AbortController()
+    let mounted = true
+
     async function fetchDbUser() {
-      if (supabaseUser?.id) {
-        try {
-          const res = await fetch(`/api/users/${supabaseUser.id}`)
-          const data = await res.json()
-          if (data.user) setDbUser(data.user)
-        } catch (e) {
-          console.error("Error fetching user", e)
+      if (!supabaseUser?.id) return
+
+      try {
+        const sessionResult = await supabase.auth.getSession()
+        const accessToken = sessionResult.data.session?.access_token ?? null
+
+        if (!accessToken) {
+          console.debug('[Nav] no access token from supabase.auth.getSession(); relying on cookies');
         }
+
+        const res = await fetch(`/api/users/${supabaseUser.id}`, {
+          method: 'GET',
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+          credentials: 'include', // also send cookies if your setup relies on them
+          signal: controller.signal,
+        })
+
+        if (!mounted) return
+
+        if (!res.ok) {
+          const text = await res.text().catch(() => '')
+          console.warn('[Nav] failed to fetch user:', res.status, text)
+          if (res.status === 401) {
+            setDbUser(null)
+          }
+          return
+        }
+
+        const data = await res.json()
+        if (data && data.user) {
+          setDbUser(data.user as DbUser)
+        } else {
+          setDbUser(null)
+        }
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return // aborted
+        }
+        console.error('[Nav] Error fetching user', err)
       }
     }
+
     fetchDbUser()
+
+    return () => {
+      mounted = false
+      controller.abort()
+    }
   }, [supabaseUser])
 
   // Click Outside to Close
@@ -126,8 +182,7 @@ export default function Nav() {
             className={styles.navButton}
           >
             Shop
-            {/* Simple arrow icon */}
-            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{transform: openMenu === 'shop' ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s'}}>
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ transform: openMenu === 'shop' ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
               <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -148,10 +203,9 @@ export default function Nav() {
                 <li><Link href="/sale" style={{color: '#ef4444'}}>Hot Sale 🔥</Link></li>
               </ul>
             </div>
-             {/* You can add images here for visual appeal */}
-             <div className={styles.megaMenuColumn}>
-                {/* Placeholder for an image in the menu */}
-             </div>
+            <div className={styles.megaMenuColumn}>
+              {/* Placeholder for an image in the menu */}
+            </div>
           </div>
         </li>
 
@@ -164,24 +218,24 @@ export default function Nav() {
             className={styles.navButton}
           >
             About
-             <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{transform: openMenu === 'about' ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s'}}>
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ transform: openMenu === 'about' ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
               <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
           <div className={`${styles.megaMenu} ${openMenu === 'about' ? styles.visible : ''}`}>
             <div className={styles.megaMenuColumn}>
-                <h3>Company</h3>
-                <ul>
-                    <li><Link href="/about">Our Story</Link></li>
-                    <li><Link href="/careers">Careers</Link></li>
-                </ul>
+              <h3>Company</h3>
+              <ul>
+                <li><Link href="/about">Our Story</Link></li>
+                <li><Link href="/careers">Careers</Link></li>
+              </ul>
             </div>
             <div className={styles.megaMenuColumn}>
-                <h3>Support</h3>
-                <ul>
-                    <li><Link href="/contact">Contact Us</Link></li>
-                    <li><Link href="/faq">FAQ</Link></li>
-                </ul>
+              <h3>Support</h3>
+              <ul>
+                <li><Link href="/contact">Contact Us</Link></li>
+                <li><Link href="/faq">FAQ</Link></li>
+              </ul>
             </div>
           </div>
         </li>
@@ -190,50 +244,45 @@ export default function Nav() {
         {dbUser ? (
           <li className={styles.navItem}>
             <button
-                aria-haspopup="true"
-                aria-expanded={openMenu === 'account'}
-                onClick={() => toggleMenu('account')}
-                className={styles.navButton}
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'account'}
+              onClick={() => toggleMenu('account')}
+              className={styles.navButton}
             >
-              <span style={{maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
-                {dbUser.username || "Account"}
+              <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {dbUser.username || 'Account'}
               </span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </button>
 
             <div className={`${styles.megaMenu} ${styles.miniMenu} ${openMenu === 'account' ? styles.visible : ''}`}>
-               <div className={styles.megaMenuColumn}>
-                  <ul>
-                    <li><Link href="/account/manage">Manage Account</Link></li>
-                    <li><Link href="/account/orders">My Orders</Link></li>
-                    <li>
-                        <button onClick={handleLogout} style={{color: '#ef4444', textAlign: 'left', background: 'none', border: 'none', padding: '4px 0', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.95rem'}}>
-                            Log Out
-                        </button>
-                    </li>
-                  </ul>
-               </div>
+              <div className={styles.megaMenuColumn}>
+                <ul>
+                  <li><Link href="/account/manage">Manage Account</Link></li>
+                  <li><Link href="/account/orders">My Orders</Link></li>
+                  <li>
+                    <button onClick={handleLogout} style={{ color: '#ef4444', textAlign: 'left', background: 'none', border: 'none', padding: '4px 0', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.95rem' }}>
+                      Log Out
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </li>
         ) : (
           <>
             <li className={styles.navItem}><Link href="/auth/login" className={styles.link}>Login</Link></li>
             <li className={styles.navItem}>
-                <Link href="/auth/register" className={styles.link} style={{
-                    backgroundColor: 'blue',
-                    color: 'white',
-                    padding: '8px 20px',
-                    boxShadow: '0 4px 14px 0 rgba(13, 71, 161, 0.39)'
-                }}>
-                    Register
-                </Link>
+              <Link href="/auth/register" className={styles.link} style={{ backgroundColor: 'blue', color: 'white', padding: '8px 20px', boxShadow: '0 4px 14px 0 rgba(13, 71, 161, 0.39)' }}>
+                Register
+              </Link>
             </li>
           </>
         )}
 
         {/* CART */}
         <li className={styles.navItem}>
-           <CartButton />
+          <CartButton />
         </li>
       </ul>
     </nav>

@@ -1,30 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Tilt_Prism } from "next/font/google";
 import "./globals.css";
 import Header from "../app/ui/components/shared/header";
 import Footer from "../app/ui/components/shared/footer";
 import { CartProvider } from "@/lib/cart-provider";
 
 
-const tiltPrism = Tilt_Prism({
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--font-tilt-prism'
-})
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "NatFruits Ecommerce",
-  description: "Shop native nature fruits directly from local farmers on NatFruits. Get the freshest, highest quality produce delivered to your door. Support local agriculture today!",
+  title: "ZYNK Ecommerce",
+  description:
+    "Shop variety of electronics directly from local stores on ZYNK. Get the freshest, highest quality products delivered to your door. Support local electronics today!",
 };
 
 export default function RootLayout({
@@ -34,11 +18,40 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${tiltPrism.variable}`}>
+      <head>
+        {/* Fallback */}
+        <link rel="icon" href="/favicon.ico" />
+
+        {/* Favicons that switch with OS/browser theme */}
+        <link
+          rel="icon"
+          href="/favicon-light.ico"
+          media="(prefers-color-scheme: light)"
+        />
+        <link
+          rel="icon"
+          href="/favicon-dark.ico"
+          media="(prefers-color-scheme: dark)"
+        />
+
+        {/* Optional: Change browser UI color for each theme (mobile browsers) */}
+        <meta
+          name="theme-color"
+          content="#ffffff"
+          media="(prefers-color-scheme: light)"
+        />
+        <meta
+          name="theme-color"
+          content="#0b1220"
+          media="(prefers-color-scheme: dark)"
+        />
+      </head>
+
+      <body>
         <CartProvider>
-        <Header/>
-        {children}
-        <Footer/>
+          <Header />
+          {children}
+          <Footer />
         </CartProvider>
       </body>
     </html>

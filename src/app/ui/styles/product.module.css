@@ -1,0 +1,233 @@
+/* products.module.css */
+
+/* --- Container & Grid --- */
+.container {
+  padding: 8rem 2rem 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.limitContainer{
+  padding: 1rem 7rem;
+}
+
+.heading, .title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937; /* Dark gray */
+  text-align: left;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* --- Card --- */
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* --- Image --- */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #f9fafb;
+}
+
+.productImage {
+  object-fit: cover;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.noImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+/* --- Badge / Tag --- */
+.statusTag,
+.tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  z-index: 10;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Badge Colors */
+.newTag,
+.newArrivalTag,
+.bestSellerTag {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24); /* Orange-yellow gradient */
+}
+
+.saleTag {
+  background-color: #f43f5e; /* Pink-red for sale */
+}
+
+.limitedTag,
+.lowStockTag {
+  background: linear-gradient(90deg, #dc2626, #ef4444); /* Red gradient */
+}
+
+.topRatedTag {
+  background: linear-gradient(90deg, #3b82f6, #6366f1); /* Blue-purple gradient */
+}
+
+/* --- Content --- */
+.content,
+.details {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.brand,
+.category {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280; /* Gray */
+  text-transform: uppercase;
+}
+
+.title,
+.productTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827; /* Dark */
+  margin: 0;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.lowStockText {
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* --- Footer --- */
+.footer,
+.priceRow {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #10b981; /* Green for price */
+}
+
+.comparePrice {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-decoration: line-through;
+  margin-left: 0.5rem;
+}
+
+/* --- Ratings --- */
+.rating,
+.ratingRow,
+.starContainer {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  gap: 0.15rem;
+}
+
+.starFilled {
+  color: #facc15; /* Yellow star */
+}
+
+.starHalf {
+  color: #facc15;
+}
+
+.starEmpty {
+  color: #d1d5db; /* Gray star */
+}
+
+.ratingNumber {
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* --- Centered messages (loading/error/empty) --- */
+.centerMessage {
+  text-align: center;
+  /* margin-top: 3rem; */
+}
+
+.errorText {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #10b981;
+}
+
+/* --- Hover effect for buttons inside cards --- */
+.card:hover button {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+@media (max-width: 850px) {
+  .limitContainer{
+    padding: 1rem 1rem;
+  }
+
+}

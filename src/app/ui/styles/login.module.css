@@ -9,18 +9,19 @@
   --warning-color: #b45309; /* Amber 700 */
   --warning-bg: #fffbe6; /* Amber 50 */
 
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   background-color: var(--bg-page);
   font-family: system-ui, -apple-system, sans-serif;
-  padding: 1rem;
+  /* padding: 1rem; */
 }
 
 /* --- Login Card Container --- */
 .loginCard {
+  margin: 8rem 0rem 0rem;
   width: 100%;
   max-width: 400px;
   padding: 2.5rem;

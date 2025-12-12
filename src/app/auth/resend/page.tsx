@@ -84,7 +84,7 @@ export default function ResendVerificationPage() {
 
         {/* Footer Link */}
         <div className={styles.footerLink}>
-            <p><a href="/login">Return to Login</a></p>
+            <p><a href="/auth/login">Return to Login</a></p>
         </div>
       </div>
     </div>

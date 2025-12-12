@@ -4,6 +4,7 @@ import Link from "next/link";
 import styles from "@/app/ui/styles/categories.module.css";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import CategorySkeleton from "../../skeletons/categories_skeleton";
 
 type Category = {
   id: number;
@@ -119,7 +120,9 @@ export default function CategoryList({ className = "" }: { className?: string })
   };
 
   if (loading) {
-    return <div className={styles.loading}>Loading categories...</div>;
+    return (
+      <CategorySkeleton />
+    )
   }
 
   if (categories.length === 0) {
@@ -128,7 +131,7 @@ export default function CategoryList({ className = "" }: { className?: string })
 
   return (
     <div className={styles.container}>
-      <h2>Categories</h2>
+      <h2 className={styles.heading}>Categories</h2>
 
       <div className={styles.carouselWrapper}>
         {/* Left arrow (mobile/scroll) */}

@@ -13,8 +13,8 @@ export default function Header() {
             <div className={styles.header}>
                 <Link href={"/"}>
                 <div className={styles.logo}>
-                    <Image src="/logo.webp" alt="NatFruit Ecommerce Logo" width={60} height={60} className="image"/>
-                    <h1 className={styles.title}>NatFruits</h1>
+                    <Image src="/bag-black.png" alt="NatFruit Ecommerce Logo" width={60} height={60} className="image"/>
+                    <h1 className={styles.title}>ZYNK</h1>
                 </div>
                 </Link>
                 <ProductSearch limit={10} />

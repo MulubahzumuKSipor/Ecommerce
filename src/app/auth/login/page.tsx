@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
 import { Loader2, Send } from 'lucide-react'
 import styles from '@/app/ui/styles/login.module.css'
 import Link from 'next/link'
